@@ -1,4 +1,4 @@
-package com.fotoalpha.awsservice.SecurityConfig;
+package com.fotoalpha.awsservice.Configuration;
 
 
 import org.springframework.beans.factory.annotation.Value;
