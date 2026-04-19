@@ -27,3 +27,73 @@ services:
             - SPRING_APPLICATION_NAME=api-gateway
             - SERVER_PORT=8082
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+    kafka:
+        image: confluentinc/cp-kafka:7.5.0
+        container_name: kafka
+        ports:
+            - "9092:9092"
+        environment:
+            - KAFKA_NODE_ID=1
+            - KAFKA_PROCESS_ROLES=broker,controller
+            - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
+            - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
+            - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+            - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+            - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+            - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+            - CLUSTER_ID=5L6g3nShT-eMCtK--X86sw
+        healthcheck:
+            test: ["CMD", "bash", "-c","echo > /dev/tcp/localhost/9092"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+            
+
+    portfolio-service:
+        build: ./PortfolioService/PortfolioService
+        container_name: portfolio_service
+        ports:
+            - "8082:8082"
+        depends_on:
+            kafka:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
+            
+        environment:
+            - SPRING_APPLICATION_NAME=portfolio-service
+            - SERVER_PORT=8082
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=admin
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/PortfolioService
+            - SPRING_DATASOURCE_DRIVE_CLASS_NAME=org.postgresql.Driver
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
+            - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+            - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=portfolio-service
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=com.fotoalpha.awsservice.KafkaEvents.SavePhotosEvent:com.fotoalpha.portfolioservice.KafkaEvents.SavePhotosEvent
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
+    postgres:
+        image: postgres:latest
+        container_name: postgresql
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=PortfolioService
+        volumes:
+            - pgdata:/var/lib/postgresql
+        healthcheck:
+            test: ["CMD","pg_isready", "-U", "postgres"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            
+volumes:
+    pgdata: 
