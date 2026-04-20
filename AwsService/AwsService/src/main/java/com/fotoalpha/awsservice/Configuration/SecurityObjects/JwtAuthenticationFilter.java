@@ -1,7 +1,7 @@
 package com.fotoalpha.awsservice.Configuration.SecurityObjects;
 
 
-import com.fotoalpha.awsservice.Configuration.SecurityService.JwtService;
+import com.fotoalpha.awsservice.Configuration.Service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,14 +28,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtService.isTokenValid(token)) {
             String username = jwtService.extractUsername(token);
             UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(username, null, List.of());
+                    new UsernamePasswordAuthenticationToken(username, null, List.of(new SimpleGrantedAuthority(jwtService.extractRole(token))));
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         filterChain.doFilter(request, response);
     }
 
     private String extractJwtFromCookie(HttpServletRequest request) {
-        if (request.getCookies() != null) return null;
+        if (request.getCookies() == null) return null;
         for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals("jwt")) {
                 return cookie.getValue();
