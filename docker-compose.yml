@@ -95,5 +95,29 @@ services:
             timeout: 5s
             retries: 10
             
+    
+    aws-service:
+        build: ./AwsService/AwsService
+        container_name: aws_service
+        ports:
+            - "8083:8083"
+        depends_on:
+            kafka:
+                condition: service_healthy
+            eureka-server:
+                condition: service_healthy
+        environment:
+            -  SPRING_APPLICATION_NAME=aws-service
+            -  SERVER_PORT=8083
+            -  EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            -  AWS_BUCKET_NAME=fotoalpha-760661274759-eu-north-1-an
+            -  AWS_REGION=eu-north-1
+            -  AWS_CREDENTIALS_SECRET_KEY=K6ol16RoJWW2jSphymd0iIJGdlQ+h0cpnTGzKJVC
+            -  AWS_CREDENTIALS_ACCESS_KEY=AKIA3CGXR6CD3GWBYUC
+            -  JWT_SECRET_KEY=yDE+Im6oxNAv3M+bi0IrWNWRWatNJdag1P2uVdWNxOo=
+            -  SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
+            -  SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+            -  SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
+            -  SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 volumes:
     pgdata: 
