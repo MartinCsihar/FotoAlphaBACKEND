@@ -65,6 +65,15 @@ public class AsService {
         zos.close();
     }
 
+    public String getPresigendURL(String prefix){
+        GetObjectRequest req = GetObjectRequest.builder().bucket(bucketName).key(prefix).build();
+        PresignedGetObjectRequest preReq = s3Presigner.presignGetObject(GetObjectPresignRequest.builder()
+                        .getObjectRequest(req)
+                        .signatureDuration(Duration.ofDays(1))
+                .build());
+        return preReq.url().toString();
+    }
+
     public List<String> getPresigendURLs(String prefix){
         List<String>  presignedURLs = new ArrayList<>();
         ListObjectsV2Response res = s3Client.listObjectsV2(ListObjectsV2Request.builder()
