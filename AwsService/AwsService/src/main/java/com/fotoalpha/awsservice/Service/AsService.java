@@ -64,7 +64,8 @@ public class AsService {
         zos.finish();
         zos.close();
     }
-    private List<String> getPresigendURLs(String prefix){
+
+    public List<String> getPresigendURLs(String prefix){
         List<String>  presignedURLs = new ArrayList<>();
         ListObjectsV2Response res = s3Client.listObjectsV2(ListObjectsV2Request.builder()
                 .bucket(bucketName)
