@@ -25,9 +25,9 @@ public class Security {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/AwsService/**").authenticated()
+                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/health").permitAll()
-                        .requestMatchers("/api/admin/AwsService/**").hasRole("ADMIN")
+                        .requestMatchers("/admin-api/**").hasRole("ADMIN")
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/PortfolioService")
+@RequestMapping("/api/")
 public class Controller {
     private final PfService pfService;
 

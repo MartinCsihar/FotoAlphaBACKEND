@@ -18,7 +18,9 @@ import java.util.UUID;
 public class Portfolio {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID PhotoID;
+    @Column(name = "photo_id")
+    private UUID photo_id;
     // presigned url. Comes from AwsService
-    private String PhotoURL;
+    @Column(name = "photo_url",columnDefinition = "TEXT")
+    private String photo_url;
 }

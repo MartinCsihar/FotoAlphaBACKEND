@@ -17,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +25,15 @@ public class AdminService {
     private final S3Client s3Client;
     private final AsService asService;
     private final Producer producer;
-
     @Value("${aws.bucket.name}")
     String bucketName;
 
-    public void uploadFiles(UploadFilesReq uploadFilesReq, String uid) throws IOException {
+    public void uploadPhotos(UploadFilesReq uploadFilesReq, String uid) throws IOException {
 
         List<String> presignedUrlsForSavePhotosEvent = new ArrayList<>();
+
         for (MultipartFile file : uploadFilesReq.getFiles()) {
-            String prefix = uid + "/" + file.getContentType().toUpperCase() + "/" ;
+            String prefix = uid + "/PHOTOS/" + "photo_" + UUID.randomUUID().toString().substring(4, 8) ;
             s3Client.putObject(PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(prefix)
@@ -43,6 +44,17 @@ public class AdminService {
         }
         SavePhotosEvent event = new SavePhotosEvent(presignedUrlsForSavePhotosEvent);
         producer.sendSavePhotosEvent(event);
+    }
+    public void uploadVideos(UploadFilesReq uploadFilesReq, String uid) throws IOException {
+
+        for (MultipartFile file : uploadFilesReq.getFiles()) {
+            String prefix = uid + "/VIDEOS/"+"video_"+ UUID.randomUUID().toString().substring(4, 8)  ;
+            s3Client.putObject(PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(prefix)
+                    .contentType(file.getContentType())
+                    .build(), RequestBody.fromBytes(file.getBytes()));
+        }
     }
 
     public GetPhotosResponse getPhotosByUID(String uid) {

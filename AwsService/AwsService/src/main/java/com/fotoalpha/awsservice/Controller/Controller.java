@@ -17,7 +17,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/AwsService")
+@RequestMapping("/api/")
 public class Controller {
     private final AsService asService;
 

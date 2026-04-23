@@ -7,26 +7,34 @@ import com.fotoalpha.awsservice.Response.UploadFilesRes;
 import com.fotoalpha.awsservice.Service.AdminService.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/AwsService")
+@RequestMapping("/admin-api/")
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
 
-    @GetMapping("/upload")
-    public ResponseEntity<UploadFilesRes> uploadFiles(@RequestParam("file") UploadFilesReq uploadFilesReq,
+    @PostMapping(value = "/uploadPhotos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UploadFilesRes> uploadPhotos(@ModelAttribute UploadFilesReq uploadFilesReq,
                                                       @RequestParam("uid") String uid) {
         try{
-            adminService.uploadFiles(uploadFilesReq, uid);
+            adminService.uploadPhotos(uploadFilesReq, uid);
             return new ResponseEntity<>(new UploadFilesRes("Sikeres feltöltés!"),  HttpStatus.OK);
         }catch(Exception e){
-            return new ResponseEntity<>(new UploadFilesRes("Nem sikerült feltölteni a fileokat!"),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new UploadFilesRes("Nem sikerült feltölteni a fileokat! Hiba: "+e),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(value = "/uploadVideos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UploadFilesRes> uploadVideos(@ModelAttribute UploadFilesReq uploadFilesReq,
+                                                       @RequestParam("uid") String uid) {
+        try{
+            adminService.uploadVideos(uploadFilesReq, uid);
+            return new ResponseEntity<>(new UploadFilesRes("Sikeres feltöltés!"),  HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(new UploadFilesRes("Nem sikerült feltölteni a fileokat! Hiba:  "+e),HttpStatus.BAD_REQUEST);
         }
     }
 
