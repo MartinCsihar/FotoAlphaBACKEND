@@ -26,6 +26,7 @@ public class Security {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/AwsService/**").authenticated()
+                        .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/admin/AwsService/**").hasRole("ADMIN")
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

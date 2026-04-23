@@ -23,11 +23,16 @@ services:
         depends_on:
             eureka-server:
                 condition: service_healthy
+            aws-service:
+                condition: service_healthy
+            portfolio-service:
+                condition: service_healthy
         environment:
             - SPRING_APPLICATION_NAME=api-gateway
-            - SERVER_PORT=8082
+            - SERVER_PORT=8081
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
-
+            - SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED=true
+            - SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_LOWER_CASE_SERVICE_ID=true
     kafka:
         image: confluentinc/cp-kafka:7.5.0
         container_name: kafka
@@ -78,6 +83,12 @@ services:
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=com.fotoalpha.awsservice.KafkaEvents.SavePhotosEvent:com.fotoalpha.portfolioservice.KafkaEvents.SavePhotosEvent
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
+        healthcheck:
+            test: ["CMD", "curl", "-f" ,"http://localhost:8082/health"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+
     postgres:
         image: postgres:latest
         container_name: postgresql
@@ -119,5 +130,10 @@ services:
             -  SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
             -  SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
             -  SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+        healthcheck:
+            test: ["CMD", "curl", "-f" ,"http://localhost:8083/health"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
 volumes:
     pgdata: 
