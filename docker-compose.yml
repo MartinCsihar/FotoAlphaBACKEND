@@ -27,12 +27,15 @@ services:
                 condition: service_healthy
             portfolio-service:
                 condition: service_healthy
+            email-service:
+                condition: service_healthy
         environment:
             - SPRING_APPLICATION_NAME=api-gateway
             - SERVER_PORT=8081
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
             - SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED=true
             - SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_LOWER_CASE_SERVICE_ID=true
+
     kafka:
         image: confluentinc/cp-kafka:7.5.0
         container_name: kafka
@@ -53,6 +56,7 @@ services:
             interval: 10s
             timeout: 3s
             retries: 10
+
     kafdrop:
         image: obsidiandynamics/kafdrop
         ports:
@@ -114,6 +118,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 10
+
     aws-service:
         build: ./AwsService/AwsService
         container_name: aws_service
@@ -145,5 +150,38 @@ services:
             interval: 10s
             timeout: 3s
             retries: 10
+
+    email-service:
+        build: ./EmailService/EmailService
+        ports:
+            - "8084:8084"
+        env_file:
+            - .env
+        depends_on:
+            eureka-server:
+                condition: service_healthy
+            kafka:
+                condition: service_healthy
+        environment:
+            - SPRING_APPLICATION_NAME=email-service
+            - SERVER_PORT=8084
+            - MAIL_SENDER_USERNAME=${MAIL_SENDER_USERNAME}
+            - MAIL_SENDER_PASSWORD=${MAIL_SENDER_PASSWORD}
+            - MAIL_SENDER_PRIVATE_EMAIL=${MAIL_SENDER_PRIVATE_EMAIL}
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appCreated:com.fotoalpha.emailservice.Objects.Events.AppointmentCreatedEvent, pwResetEmail:com.fotoalpha.emailservice.Objects.Events.SendPwResetEvent
+            - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+            - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=email-service
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8084/"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+
 volumes:
     pgdata: 
