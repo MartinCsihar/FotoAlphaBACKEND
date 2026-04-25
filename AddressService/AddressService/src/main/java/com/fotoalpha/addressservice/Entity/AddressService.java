@@ -21,4 +21,5 @@ public class AddressService {
     private String houseNumber;
     private String streetType;
     private String userID;
+    private String pairLocations;
 }
