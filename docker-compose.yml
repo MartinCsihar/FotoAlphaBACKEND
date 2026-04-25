@@ -106,11 +106,10 @@ services:
         image: postgres:latest
         container_name: postgresql
         ports:
-            - "5432:5432"
+            - "5433:5432"
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=admin
-            - POSTGRES_DB=PortfolioService
         volumes:
             - pgdata:/var/lib/postgresql
         healthcheck:
@@ -183,5 +182,34 @@ services:
             timeout: 3s
             retries: 10
 
+    address-service:
+        build: ./AddressService/AddressService
+        container_name: address_service
+        ports:
+            -  "8085:8085"
+        depends_on:
+            eureka-server:
+                condition: service_healthy
+            kafka:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
+        environment:
+            - SPRING_APPLICATION_NAME=address-service
+            - SERVER_PORT=8085
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=admin
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/AddressService
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver         
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
+            - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+            - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=address-service
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest      
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent, deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent                
 volumes:
     pgdata: 
