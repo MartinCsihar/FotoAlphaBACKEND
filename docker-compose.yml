@@ -178,7 +178,7 @@ services:
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8084/"]
+            test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
             interval: 10s
             timeout: 3s
             retries: 10
