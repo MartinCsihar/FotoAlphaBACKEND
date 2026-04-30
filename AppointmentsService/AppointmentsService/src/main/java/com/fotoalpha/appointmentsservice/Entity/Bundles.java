@@ -15,15 +15,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Bundles {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bundleId;
     @Enumerated(EnumType.STRING)
     private BundleType bundleType;
     @Enumerated(EnumType.STRING)
     private BundleSubType bundleSubType;
     private Integer bundlePrice;
+    private String pairLocations;
 
-    @ManyToOne
-    private Appointments appointment;
 
 }

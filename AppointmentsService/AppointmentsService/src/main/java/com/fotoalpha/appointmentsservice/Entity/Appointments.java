@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -35,20 +36,25 @@ public class Appointments {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "appointment")
-    private List<Bundles> bundleId =  new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "bundle_id")
+    private Bundles bundle;
 
-    @OneToMany(mappedBy = "appointment")
-    private List<PersonalBundles> presonalBundleId = new  ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "personal_bundle_id")
+    private PersonalBundles presonalBundle;
 
     @PrePersist
     public void prePersist() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder sb = new StringBuilder(chars.length());
+        StringBuilder sb_appId = new StringBuilder(chars.length());
+        StringBuilder sb_addressId = new StringBuilder(chars.length());
         Random rnd = new Random();
         for (int i = 0; i < 6; i++) {
-            sb.append(chars.charAt(rnd.nextInt(chars.length())));
-            id = "#" + sb.toString();
+            sb_appId.append(chars.charAt(rnd.nextInt(chars.length())));
+            sb_addressId.append(chars.charAt(rnd.nextInt(chars.length())));
         }
+        id = "#" + sb_appId.toString();
+        addressId = sb_addressId.toString();
     }
 }

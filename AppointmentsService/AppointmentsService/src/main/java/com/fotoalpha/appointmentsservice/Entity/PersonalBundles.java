@@ -31,8 +31,4 @@ public class PersonalBundles {
             inverseJoinColumns = @JoinColumn(name="personalBundleId")
     )
     private List<Events> events;
-
-
-    @ManyToOne
-    private Appointments appointment;
 }
