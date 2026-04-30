@@ -59,6 +59,7 @@ services:
 
     kafdrop:
         image: obsidiandynamics/kafdrop
+        container_name: kafdrop
         ports:
           - "9000:9000"
         environment:
@@ -152,6 +153,7 @@ services:
 
     email-service:
         build: ./EmailService/EmailService
+        container_name: email_service
         ports:
             - "8084:8084"
         env_file:
