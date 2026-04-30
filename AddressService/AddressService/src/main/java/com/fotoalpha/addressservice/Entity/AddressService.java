@@ -13,7 +13,6 @@ import java.util.UUID;
 @Data
 public class AddressService {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String postalCode;
     private String streetName;

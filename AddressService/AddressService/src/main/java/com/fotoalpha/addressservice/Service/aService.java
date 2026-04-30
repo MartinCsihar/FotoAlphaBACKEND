@@ -14,10 +14,12 @@ public class aService {
     public void saveAddress(SaveAddressEvent event) {
         AddressService newAddress = new AddressService();
         if (event.isPairLocations() == true) {
+            newAddress.setId(event.addressId());
             newAddress.setPairLocations(event.pairLocations());
             newAddress.setUserID(event.userID());
             aRepo.save(newAddress);
         }
+        newAddress.setId(event.addressId());
         newAddress.setCity(event.city());
         newAddress.setHouseNumber(event.houseNumber());
         newAddress.setStreetType(event.streetType());
