@@ -12,11 +12,7 @@ import java.time.LocalTime;
 @Data
 @Builder
 public class SavePairAppointmentRequest {
-    LocalDate orderDate;
     LocalDate appointmentDate;
     LocalTime appointmentTime;
-    Bundles bundle;
-    Status status;
-    AppointmentType type;
-
+    Integer bundleId;
 }

@@ -8,5 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface AddressRepo extends JpaRepository<AddressService, UUID> {
-    void deleteById(UUID id);
+    void deleteById(String id);
 }

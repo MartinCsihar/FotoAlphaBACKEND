@@ -74,8 +74,8 @@ public class EmailService {
                                     <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
                                     <table style="width: 100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
                                         <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalási szám:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">#%s</td>
+                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító:</td>
+                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Típus:</td>
@@ -181,8 +181,8 @@ public class EmailService {
                                     <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
                                     <table style="width: 100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
                                         <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalási szám:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">#%s</td>
+                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító:</td>
+                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Típus:</td>

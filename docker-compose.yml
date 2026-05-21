@@ -40,15 +40,16 @@ services:
         image: confluentinc/cp-kafka:7.5.0
         container_name: kafka
         ports:
-            - "9092:9092"
+            - "9094:9094"
         environment:
             - KAFKA_NODE_ID=1
             - KAFKA_PROCESS_ROLES=broker,controller
             - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
-            - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
-            - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+            - KAFKA_LISTENERS=INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:29093
+            - KAFKA_ADVERTISED_LISTENERS=INTERNAL://kafka:9092,EXTERNAL://localhost:9094
+            - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
             - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
-            - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+            - KAFKA_INTER_BROKER_LISTENER_NAME=INTERNAL
             - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
             - CLUSTER_ID=5L6g3nShT-eMCtK--X86sw
         healthcheck:
@@ -64,6 +65,8 @@ services:
           - "9000:9000"
         environment:
           - KAFKA_BROKERCONNECT=kafka:9092
+          - KAFKA_PROPERTIES_SECURITY_PROTOCOL=PLAINTEXT
+          - KAFKA_PROPERTIES_SASL_MECHANISM=PLAIN
         depends_on:
             kafka:
                 condition: service_healthy 
@@ -212,6 +215,8 @@ services:
             - SPRING_KAFKA_CONSUMER_GROUP_ID=address-service
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest      
-            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent, deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent                
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent,deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent
+            - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_KAFKA=DEBUG
+            - LOGGING_LEVEL_ORG_APACHE_KAFKA=DEBUG                
 volumes:
     pgdata: 

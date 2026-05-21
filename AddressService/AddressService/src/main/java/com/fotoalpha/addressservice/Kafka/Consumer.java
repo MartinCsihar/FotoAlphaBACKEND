@@ -5,9 +5,11 @@ import com.fotoalpha.addressservice.Events.DeleteAddressEvent;
 import com.fotoalpha.addressservice.Events.SaveAddressEvent;
 import com.fotoalpha.addressservice.Service.aService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class Consumer {
@@ -15,6 +17,7 @@ public class Consumer {
 
     @KafkaListener(topics = "save-address", groupId = "address-service")
     public void saveAddress(SaveAddressEvent event) {
+        log.info("Received SaveAddressEvent {}", event);
         service.saveAddress(event);
     }
 

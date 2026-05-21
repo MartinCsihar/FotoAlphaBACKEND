@@ -56,5 +56,7 @@ public class Appointments {
         }
         id = "#" + sb_appId.toString();
         addressId = sb_addressId.toString();
+        orderDate = LocalDate.now();
+        status = Status.pending;
     }
 }

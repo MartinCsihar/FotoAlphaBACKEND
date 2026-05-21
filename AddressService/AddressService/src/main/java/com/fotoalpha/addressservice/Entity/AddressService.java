@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 public class AddressService {
     @Id
-    private UUID id;
+    private String id;
     private String postalCode;
     private String streetName;
     private String city;
