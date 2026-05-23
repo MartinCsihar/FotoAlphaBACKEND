@@ -38,11 +38,9 @@ public class SecurityConfig {
                         .requestMatchers("/admin-api/**").hasRole("ADMIN")
                         .requestMatchers("/test/**").permitAll()
                 )
-
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
     @Bean
     public CommandLineRunner initDatabase(){
         return args -> {

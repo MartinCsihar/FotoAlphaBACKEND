@@ -15,12 +15,13 @@ import com.fotoalpha.appointmentsservice.ResponseRequest.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -253,4 +254,15 @@ public class appService {
         bundlePrice += req.getLightPaintPhotos() == true ?  10000 : 0;
         return bundlePrice;
     }
+
+    public Map<String, Integer> getTotalIncome() {
+        Map<String, Integer> totalIncome = new HashMap<>();
+        int ownMade =appRepo.getTotalIncomeOwnMade();
+        int pairWedding =appRepo.getTotalIncomePairWedding();
+        totalIncome.put("own_made_wedding", ownMade);
+        totalIncome.put("pair_wedding",pairWedding);
+        totalIncome.put("total_income", ownMade + pairWedding);
+        return totalIncome;
+    }
+
 }

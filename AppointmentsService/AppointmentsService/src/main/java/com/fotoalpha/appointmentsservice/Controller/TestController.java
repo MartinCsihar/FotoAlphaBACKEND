@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -72,4 +74,11 @@ public class TestController {
     public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, @RequestParam String uid){
         return new ResponseEntity<>(appService.saveOwnMadeApp(req, uid), HttpStatus.OK);
     }
+
+
+    @GetMapping("/totalIncome")
+    public ResponseEntity<Map<String, Integer>> getTotalIncome(){
+        return new ResponseEntity<>(appService.getTotalIncome(), HttpStatus.OK);
+    }
+
 }
