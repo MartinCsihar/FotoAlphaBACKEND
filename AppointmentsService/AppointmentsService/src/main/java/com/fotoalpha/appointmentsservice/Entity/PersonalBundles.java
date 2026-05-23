@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Random;
 
 @Entity
 @Data
@@ -15,9 +16,7 @@ import java.util.List;
 @Builder
 public class PersonalBundles {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id;
     private Integer rawPhotos;
     private Integer editedPhotos;
     private Integer instantPhotos;
@@ -26,9 +25,17 @@ public class PersonalBundles {
 
     @ManyToMany
     @JoinTable(
-            name = "presonalEvents",
-            joinColumns = @JoinColumn(name = "eventId"),
-            inverseJoinColumns = @JoinColumn(name="personalBundleId")
+            name = "personalEvents",
+            joinColumns = @JoinColumn(name = "personal_bundle_id"),
+            inverseJoinColumns = @JoinColumn(name="event_id")
     )
     private List<Events> events;
+    @PrePersist
+    public void prePersist() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb_appId = new StringBuilder(7);
+        Random rnd = new Random();
+        for (int i = 0; i<8; i++) sb_appId.append(chars.charAt(rnd.nextInt(chars.length())));
+        id = sb_appId.toString();
+    }
 }

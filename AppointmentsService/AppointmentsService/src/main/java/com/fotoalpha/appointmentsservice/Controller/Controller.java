@@ -2,6 +2,7 @@ package com.fotoalpha.appointmentsservice.Controller;
 
 import com.fotoalpha.appointmentsservice.ResponseRequest.GetAllAppointmentsResponse;
 import com.fotoalpha.appointmentsservice.ResponseRequest.GetAppointmentByIdResponse;
+import com.fotoalpha.appointmentsservice.ResponseRequest.SaveOwnMadeWeddingAppointmentRequest;
 import com.fotoalpha.appointmentsservice.ResponseRequest.SavePairAppointmentRequest;
 import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,14 @@ public class Controller {
         }
 
     }
-
+    @PostMapping("/saveOwnMadeWeddingAppointment")
+    public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, Authentication authentication) throws ExecutionException, InterruptedException, TimeoutException {
+        try {
+            String uid = authentication.getName();
+            return new ResponseEntity<>(appService.saveOwnMadeApp(req, uid), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

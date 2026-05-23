@@ -19,5 +19,5 @@ public class SaveOwnMadeWeddingAppointmentRequest {
     LocalDate orderDate;
     LocalDate appointmentDate;
     LocalTime appointmentTime;
-    List<Integer> eventIds;
+    List<Long> eventIds;
 }

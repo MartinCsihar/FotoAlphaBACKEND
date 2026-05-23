@@ -4,10 +4,7 @@ import com.fotoalpha.appointmentsservice.Entity.Appointments;
 import com.fotoalpha.appointmentsservice.Enums.AppointmentType;
 import com.fotoalpha.appointmentsservice.Enums.Status;
 import com.fotoalpha.appointmentsservice.Repo.AppRepo;
-import com.fotoalpha.appointmentsservice.ResponseRequest.GetAllAppointmentsResponse;
-import com.fotoalpha.appointmentsservice.ResponseRequest.GetAppointmentByIdResponse;
-import com.fotoalpha.appointmentsservice.ResponseRequest.SavePairAppointmentRequest;
-import com.fotoalpha.appointmentsservice.ResponseRequest.SaveWeddingAppointmentRequest;
+import com.fotoalpha.appointmentsservice.ResponseRequest.*;
 import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -69,5 +66,10 @@ public class TestController {
     @PostMapping("/saveWeddingAppointment")
     public ResponseEntity<Boolean> saveWeddingAppointment(@RequestBody SaveWeddingAppointmentRequest req, @RequestParam("uid") String uid){
         return new ResponseEntity<>(appService.saveWeddingAppointment(req, uid), HttpStatus.OK);
+    }
+
+    @PostMapping("/saveOwnMadeWeddingAppointment")
+    public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, @RequestParam String uid){
+        return new ResponseEntity<>(appService.saveOwnMadeApp(req, uid), HttpStatus.OK);
     }
 }

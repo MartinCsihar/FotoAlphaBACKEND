@@ -22,10 +22,12 @@ import java.util.UUID;
 @Data
 @Builder
 public class Appointments {
+    // Generated
     @Id
     private String id;
     private String addressId;
     private LocalDate orderDate;
+    //
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
     private String userId;

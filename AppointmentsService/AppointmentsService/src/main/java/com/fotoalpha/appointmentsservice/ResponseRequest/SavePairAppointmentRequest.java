@@ -1,8 +1,5 @@
 package com.fotoalpha.appointmentsservice.ResponseRequest;
 
-import com.fotoalpha.appointmentsservice.Entity.Bundles;
-import com.fotoalpha.appointmentsservice.Enums.AppointmentType;
-import com.fotoalpha.appointmentsservice.Enums.Status;
 import lombok.Builder;
 import lombok.Data;
 

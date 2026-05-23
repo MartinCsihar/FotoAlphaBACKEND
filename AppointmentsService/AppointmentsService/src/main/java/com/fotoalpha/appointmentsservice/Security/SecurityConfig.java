@@ -1,9 +1,12 @@
 package com.fotoalpha.appointmentsservice.Security;
 
 import com.fotoalpha.appointmentsservice.Entity.Bundles;
+import com.fotoalpha.appointmentsservice.Entity.Events;
 import com.fotoalpha.appointmentsservice.Enums.BundleSubType;
 import com.fotoalpha.appointmentsservice.Enums.BundleType;
+import com.fotoalpha.appointmentsservice.Enums.EventName;
 import com.fotoalpha.appointmentsservice.Repo.BundleRepo;
+import com.fotoalpha.appointmentsservice.Repo.EventRepo;
 import com.fotoalpha.appointmentsservice.Security.SecurityObjects.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +26,7 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final BundleRepo bRepo;
+    private final EventRepo eRepo;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -97,6 +101,31 @@ public class SecurityConfig {
                 bRepo.saveAll(List.of(GAMMA_bundle, BETA_bundle, DELTA_bundle, ALPHA_bundle, ASTERIA_bundle, AIGIS_bundle, MEGARON_bundle));
                 System.out.println("---- Bundles Created! ----");
 
+            }
+            if (eRepo.count() == 0 ) {
+                System.out.println("---- Creating Events ----");
+                Events preparation = Events.builder()
+                        .eventName(EventName.preparation)
+                        .eventPrice(10000)
+                        .build();
+                Events creativePhoto = Events.builder()
+                        .eventName(EventName.creativePhotography)
+                        .eventPrice(15000)
+                        .build();
+                Events ceremony = Events.builder()
+                        .eventName(EventName.ceremony)
+                        .eventPrice(20000)
+                        .build();
+                Events dinner = Events.builder()
+                        .eventName(EventName.dinner)
+                        .eventPrice(15000)
+                        .build();
+                Events dance = Events.builder()
+                        .eventName(EventName.dance)
+                        .eventPrice(20000)
+                        .build();
+                eRepo.saveAll(List.of(preparation, creativePhoto, ceremony, dinner, dance));
+                System.out.println("---- Events Created ----");
             }
         };
     }

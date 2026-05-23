@@ -24,5 +24,7 @@ public record AppointmentCreatedEvent(
         String firstName,
         String lastName,
         String phoneNumber
+
+
 ) {
 }
