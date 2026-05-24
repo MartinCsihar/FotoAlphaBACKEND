@@ -1,5 +1,6 @@
 package com.fotoalpha.appointmentsservice.Controller;
 
+import com.fotoalpha.appointmentsservice.Entity.Appointments;
 import com.fotoalpha.appointmentsservice.ResponseRequest.GetAllAppointmentsResponse;
 import com.fotoalpha.appointmentsservice.ResponseRequest.GetAppointmentByIdResponse;
 import com.fotoalpha.appointmentsservice.ResponseRequest.SaveOwnMadeWeddingAppointmentRequest;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -21,9 +23,9 @@ public class Controller {
     private final appService appService;
 
     @GetMapping("/allAppointments")
-    public ResponseEntity<GetAllAppointmentsResponse> getAllAppointments(Authentication authentication) {
+    public ResponseEntity<List<Appointments>> getAllAppointments(Authentication authentication) {
         String uid = authentication.getName();
-        return new ResponseEntity<>(appService.getAllAppointmentByUserId(uid), HttpStatus.OK);
+        return new ResponseEntity<>(appService.getAllAppointmentsByUserId(uid), HttpStatus.OK);
     }
 
     @GetMapping("/appointment")

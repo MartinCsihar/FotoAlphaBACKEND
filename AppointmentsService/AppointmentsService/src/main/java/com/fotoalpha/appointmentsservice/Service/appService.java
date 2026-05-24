@@ -6,6 +6,7 @@ import com.fotoalpha.appointmentsservice.Enums.Status;
 import com.fotoalpha.appointmentsservice.Kafka.Consumer;
 import com.fotoalpha.appointmentsservice.Kafka.Producer;
 import com.fotoalpha.appointmentsservice.KafkaEvents.AppointmentCreatedEvent;
+import com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent;
 import com.fotoalpha.appointmentsservice.KafkaEvents.SaveAddressEvent;
 import com.fotoalpha.appointmentsservice.Repo.AppRepo;
 import com.fotoalpha.appointmentsservice.Repo.BundleRepo;
@@ -15,13 +16,17 @@ import com.fotoalpha.appointmentsservice.ResponseRequest.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Fetch;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -37,10 +42,7 @@ public class appService {
     private final PersonalBundlesRepo personalBundlesRepo;
 
 
-    public GetAllAppointmentsResponse getAllAppointmentByUserId(String uid) {
-        List<Appointments> querriedApps = appRepo.findAllByUserId(uid);
-        return GetAllAppointmentsResponse.builder().appointments(querriedApps).build();
-    }
+
 
     public GetAppointmentByIdResponse getAppointmentByAppointmentIdAndUserId(String appId, String uid) {
         Appointments querriedApp = appRepo.findByIdAndUserId(appId, uid);
@@ -265,4 +267,72 @@ public class appService {
         return totalIncome;
     }
 
+    public Map<String, Integer> countAppointments() {
+        Map<String, Integer> appCounts = new HashMap<>();
+        int pair = appRepo.countAppointmentsByBundleType("Pair");
+        int wedding = appRepo.countAppointmentsByBundleType("Wedding");
+        appCounts.put("pair", pair);
+        appCounts.put("wedding", wedding);
+        return appCounts;
+    }
+    @Transactional
+    public Boolean modifyAppDetails(String appId, String uid, AdminModifyDetailsRequest req) {
+        Appointments foundApp  = appRepo.findById(appId).orElse(null);
+        LocalDate reqDate = req.getAppointmentDate();
+        LocalTime reqTime = req.getAppointmentTime();
+        if (foundApp != null) {
+            if (reqDate != null) {
+                appRepo.updateAppDate(reqDate, uid, appId);
+                return true;
+            };
+            if (reqTime != null) {
+                appRepo.updateAppTime(reqTime, uid, appId);
+                return true;
+            };
+            return false;
+        }
+        return false;
+    }
+    @Transactional
+    public Boolean accomplishAppointment(String appid, String uid) {
+        appRepo.updateStatus(String.valueOf(Status.completed), uid, appid );
+        return true;
+    }
+
+    public Boolean deleteAppointment(String appid) {
+        Appointments foundApp  = appRepo.findById(appid).orElse(null);
+        if (foundApp != null) {
+            if (foundApp.getPresonalBundle() != null) {
+                appRepo.deleteById(appid);
+                personalBundlesRepo.delete(foundApp.getPresonalBundle());
+                return true;
+            }
+            else{
+                appRepo.deleteById(appid);
+                return true;
+            }
+        }
+        return false;
+    }
+    public List<Appointments> getAllAppointmentsByUserId(String uid) {
+        return appRepo.findAllByUserId(uid);
+    }
+
+    public Appointments getAllAppointmentsOfUserByAppId(String appid, String uid) {
+        return appRepo.findByIdAndUserId(appid, uid);
+    }
+
+    public List<Appointments> allAppointments() {
+        return appRepo.findAll();
+    }
+
+    public Integer countClients() {
+        return appRepo.countClients();
+    }
+
+    public List<User> fetchUsers() throws ExecutionException, InterruptedException, TimeoutException {
+        String correlationId = UUID.randomUUID().toString();
+        FetchUsersEvent fue = new FetchUsersEvent(List.of(null),  correlationId);
+        return producer.sendFetchUsersEvent(fue).users();
+    }
 }

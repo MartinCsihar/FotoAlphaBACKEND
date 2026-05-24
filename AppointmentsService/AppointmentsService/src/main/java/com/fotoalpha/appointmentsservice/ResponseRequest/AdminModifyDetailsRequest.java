@@ -9,11 +9,6 @@ import java.time.LocalTime;
 @Data
 @Builder
 public class AdminModifyDetailsRequest {
-    String firstName;
-    String lastName;
-    String email;
-    String telNum;
     LocalDate appointmentDate;
     LocalTime appointmentTime;
-    Integer price;
 }

@@ -1,12 +1,15 @@
 package com.fotoalpha.appointmentsservice.Controller;
 
 import com.fotoalpha.appointmentsservice.Entity.Appointments;
+import com.fotoalpha.appointmentsservice.Entity.User;
 import com.fotoalpha.appointmentsservice.Enums.AppointmentType;
 import com.fotoalpha.appointmentsservice.Enums.Status;
+import com.fotoalpha.appointmentsservice.Kafka.Consumer;
 import com.fotoalpha.appointmentsservice.Repo.AppRepo;
 import com.fotoalpha.appointmentsservice.ResponseRequest.*;
 import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 public class TestController {
     private final appService appService;
     private final AppRepo repo;
+    private final Consumer consumer;
 
 //    @PostMapping("/save")
 //    public String saveApp(@RequestBody SaveWeddingAppointmentRequest req, @RequestParam("uid")String uid){
@@ -42,11 +46,6 @@ public class TestController {
 //            return e.getMessage();
 //        }
 //    }
-
-    @GetMapping("/getAllAppointments")
-    public ResponseEntity<GetAllAppointmentsResponse> getAllAppointments(@RequestParam String userId) {
-        return new ResponseEntity<>(appService.getAllAppointmentByUserId(userId ), HttpStatus.OK);
-    }
 
     @GetMapping("/appointment")
     public ResponseEntity<GetAppointmentByIdResponse> getAppointmentById(@RequestParam("appId") String appId, @RequestParam("uid") String uid) {
@@ -80,5 +79,47 @@ public class TestController {
     public ResponseEntity<Map<String, Integer>> getTotalIncome(){
         return new ResponseEntity<>(appService.getTotalIncome(), HttpStatus.OK);
     }
+    @GetMapping("/countAppointments")
+    public ResponseEntity<Map<String, Integer>> getCountAppointments(){
+        return new ResponseEntity<>(appService.countAppointments(), HttpStatus.OK);
+    }
+    @PatchMapping("/modify")
+    public ResponseEntity<Boolean> modifyAppointment(@RequestBody AdminModifyDetailsRequest req ,
+                                                     @RequestParam("appid") String appId,
+                                                     @RequestParam("uid") String uid) {
+        return new ResponseEntity<>(appService.modifyAppDetails(appId, uid, req), HttpStatus.OK);
+    }
 
+    @PutMapping("/accomplish")
+    public ResponseEntity<Boolean> accomplishAppointment(@RequestParam("uid") String uid, @RequestParam("appid") String appid) {
+        return new ResponseEntity<>(appService.accomplishAppointment(appid, uid), HttpStatus.OK);
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<Boolean> deleteAppointment(@RequestParam("appid") String appid) {
+        return new ResponseEntity<>(appService.deleteAppointment(appid), HttpStatus.OK);
+    }
+    @GetMapping("/allAppointmentsOfUser")
+    public ResponseEntity<List<Appointments>> getAllAppointmentsOfUser(@RequestParam("uid") String uid) {
+        return new ResponseEntity<>(appService.getAllAppointmentsByUserId(uid), HttpStatus.OK);
+    }
+    @GetMapping("/allAppointmentsOfUserByAppId")
+    public ResponseEntity<Appointments> getAllAppointmentsOfUserByAppId(@RequestParam("uid") String uid, @RequestParam("appid") String appid) {
+        return new ResponseEntity<>(appService.getAllAppointmentsOfUserByAppId(appid, uid), HttpStatus.OK);
+    }
+    @GetMapping("/allAppointments")
+    public ResponseEntity<List<Appointments>> getAllAppointments() {
+        return new ResponseEntity<>(appService.allAppointments(), HttpStatus.OK);
+    }
+    @GetMapping("/countClients")
+    public ResponseEntity<Integer> countClients() {
+        return new ResponseEntity<>(appService.countClients(), HttpStatus.OK);
+    }
+    @GetMapping("/fetchUsers")
+    public ResponseEntity<List<User>> getAllUsers() throws ExecutionException, InterruptedException, TimeoutException {
+        try{
+            return new ResponseEntity<>(appService.fetchUsers(), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

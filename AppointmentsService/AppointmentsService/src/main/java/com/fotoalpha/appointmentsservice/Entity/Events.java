@@ -21,7 +21,6 @@ public class Events {
     private Integer eventPrice;
     @Enumerated(EnumType.STRING)
     private EventName eventName;
-    @ManyToMany
-    private List<PersonalBundles> personalBundles;
+
 
 }
