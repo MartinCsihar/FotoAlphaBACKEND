@@ -5,9 +5,7 @@ import com.fotoalpha.appointmentsservice.Enums.AppointmentType;
 import com.fotoalpha.appointmentsservice.Enums.Status;
 import com.fotoalpha.appointmentsservice.Kafka.Consumer;
 import com.fotoalpha.appointmentsservice.Kafka.Producer;
-import com.fotoalpha.appointmentsservice.KafkaEvents.AppointmentCreatedEvent;
-import com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent;
-import com.fotoalpha.appointmentsservice.KafkaEvents.SaveAddressEvent;
+import com.fotoalpha.appointmentsservice.KafkaEvents.*;
 import com.fotoalpha.appointmentsservice.Repo.AppRepo;
 import com.fotoalpha.appointmentsservice.Repo.BundleRepo;
 import com.fotoalpha.appointmentsservice.Repo.EventRepo;
@@ -22,11 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -334,5 +329,11 @@ public class appService {
         String correlationId = UUID.randomUUID().toString();
         FetchUsersEvent fue = new FetchUsersEvent(List.of(null),  correlationId);
         return producer.sendFetchUsersEvent(fue).users();
+    }
+
+    public void getRequestedAppointments(AppInfoReqEvent appInfoReqEvent) {
+        List<Appointments> querriedApps = appRepo.findAllById(appInfoReqEvent.appIds());
+        AppInfoResEvent appInfoResEvent = new AppInfoResEvent(appInfoReqEvent.correlationId(), querriedApps);
+        producer.sendAppInfoResEvent(appInfoResEvent);
     }
 }

@@ -17,6 +17,7 @@ public class Producer {
     private final KafkaTemplate<String, AppointmentCreatedEvent> kafkaAppointmentTemplate;
     private final KafkaTemplate<String, GetUserDataEvent> kafkaGetUserDataTemplate;
     private final KafkaTemplate<String, FetchUsersEvent> kafkaFetchUsersTemplate;
+    private final KafkaTemplate<String, AppInfoResEvent> kafkaAppInfoResTemplate;
     private final GetUserDataFutureManager gudeManager;
     private final FetchUsersEventManager fueManager;
 
@@ -40,5 +41,9 @@ public class Producer {
 
         kafkaFetchUsersTemplate.send("fetch-users", fetchUsersEvent);
         return future.get(5, TimeUnit.SECONDS);
+    }
+
+    public void sendAppInfoResEvent(AppInfoResEvent appInfoResEvent) {
+        kafkaAppInfoResTemplate.send("app-info-req.comp", appInfoResEvent);
     }
 }
