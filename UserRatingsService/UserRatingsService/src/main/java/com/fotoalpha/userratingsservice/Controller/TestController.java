@@ -1,5 +1,7 @@
 package com.fotoalpha.userratingsservice.Controller;
 
+import com.fotoalpha.userratingsservice.RequestsResponses.FetchAllRatingsResponse;
+import com.fotoalpha.userratingsservice.RequestsResponses.RatingObject;
 import com.fotoalpha.userratingsservice.RequestsResponses.SaveRatingRequest;
 import com.fotoalpha.userratingsservice.Service.URSService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("/test")
@@ -28,5 +34,15 @@ public class TestController {
                                               @RequestParam("uid") String uid,
                                               @RequestParam("appid") String appid){
         return new ResponseEntity<>(ursService.saveRating(req, uid, appid),  HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getAllRatings")
+    public ResponseEntity<FetchAllRatingsResponse> getRatings() throws ExecutionException, InterruptedException, TimeoutException {
+
+        try {
+            return new ResponseEntity<>(ursService.getRatings(), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class UserRatingsService {
     @EmbeddedId
     URSKeys id;
-    double rating;
+    int rating;
     LocalDate date;
     String ratingText;
 }
