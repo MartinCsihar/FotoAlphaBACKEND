@@ -32,7 +32,6 @@ public class appService {
     private final AppRepo appRepo;
     private final BundleRepo bundleRepo;
     private final Producer producer;
-    private final Consumer consumer;
     private final EventRepo eventRepo;
     private final PersonalBundlesRepo personalBundlesRepo;
 
@@ -333,7 +332,17 @@ public class appService {
 
     public void getRequestedAppointments(AppInfoReqEvent appInfoReqEvent) {
         List<Appointments> querriedApps = appRepo.findAllById(appInfoReqEvent.appIds());
-        AppInfoResEvent appInfoResEvent = new AppInfoResEvent(appInfoReqEvent.correlationId(), querriedApps);
+        List<AppointmentResponse> appointmentResponses = new ArrayList<>();
+        for (Appointments app : querriedApps) {
+            AppointmentResponse ar = AppointmentResponse.builder()
+                    .type(app.getType().toString())
+                    .bunldeSubType(app.getBundle().getBundleSubType().toString())
+                    .userId(app.getUserId())
+                    .appId(app.getId())
+                    .build();
+            appointmentResponses.add(ar);
+        }
+        AppInfoResEvent appInfoResEvent = new AppInfoResEvent(appInfoReqEvent.correlationId(), appointmentResponses);
         producer.sendAppInfoResEvent(appInfoResEvent);
     }
 }

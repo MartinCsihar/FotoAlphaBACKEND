@@ -29,6 +29,10 @@ services:
                 condition: service_healthy
             email-service:
                 condition: service_healthy
+            appointments-service:
+                condition: service_healthy
+            address-service:
+                condition: service_healthy
         environment:
             - SPRING_APPLICATION_NAME=api-gateway
             - SERVER_PORT=8081
@@ -192,6 +196,8 @@ services:
         container_name: address_service
         ports:
             -  "8085:8085"
+        env_file:
+            - .env
         depends_on:
             eureka-server:
                 condition: service_healthy
@@ -217,6 +223,51 @@ services:
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest      
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent,deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent
             - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_KAFKA=DEBUG
-            - LOGGING_LEVEL_ORG_APACHE_KAFKA=DEBUG                
+            - LOGGING_LEVEL_ORG_APACHE_KAFKA=DEBUG
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8085/health"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+
+    appointments-service:
+        build: ./AppointmentsService/AppointmentsService
+        container_name: appointments_service
+        ports:
+            - "8086:8086"
+        depends_on:
+            kafka:
+                condition: service_healthy
+            eureka-server:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
+        environment:
+            - SPRING_APPLICATION_NAME=appointments_service
+            - SERVER_PORT=8086
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            - JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=admin
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/AppointmentsService
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=update           
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
+            - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+            - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=appointments-service
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest   
+            - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+            - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer 
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true 
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userDataResponse:com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEventResponse,fetchUsers:com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent,appInfoReq:com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoReqEvent  
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.appointmentsservice.KafkaEvents.SaveAddressEvent,deleteAddress:com.fotoalpha.appointmentsservice.KafkaEvents.DeleteAddressEvent,appCreated:com.fotoalpha.appointmentsservice.KafkaEvents.AppointmentCreatedEvent,userData:com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEvent,fetchUsers:com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent,appInfoRes:com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoResEvent           
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
 volumes:
     pgdata: 
