@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret-key}")
+    @Value("${jwt.secret.key}")
     private String SECRET_KEY;
 
     public <T> T extractClaim(String token, Function<Claims, T> parser) {
