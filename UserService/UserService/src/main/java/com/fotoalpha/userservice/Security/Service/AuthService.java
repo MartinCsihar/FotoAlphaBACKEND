@@ -13,11 +13,19 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public String login(String email, String rawPassword) {
-        User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+    public String login(String data, String rawPassword, boolean withUsername) {
+        User user = null;
+        if (withUsername) {
+            user = userRepo.findByUserID(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+            return jwtService.generateToken(user);
+        }
+        if (!withUsername) {
+            user = userRepo.findByEmail(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+            return jwtService.generateToken(user);
+        }
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
-        return jwtService.generateToken(user);
+        return null;
     }
 }

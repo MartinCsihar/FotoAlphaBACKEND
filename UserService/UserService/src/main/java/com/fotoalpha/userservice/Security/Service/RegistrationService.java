@@ -14,7 +14,7 @@ public class RegistrationService {
     private final PasswordEncoder encoder;
 
     public void register(RegisterRequest req) {
-        if (userRepo.findByEmail(req.getEmail()).isPresent()) {
+        if (userRepo.findByUserID(req.getUsername()).isPresent()) {
             throw new SecurityException("Email already exists");
         }
         User user = User.builder()
@@ -26,7 +26,7 @@ public class RegistrationService {
                 .phoneNumber(req.getPhoneNumber())
                 .userID(req.getUsername())
                 .numberOfPhotos(0)
-                .role("ROLE_USER")
+                .role("USER")
                 .build();
         userRepo.save(user);
     }

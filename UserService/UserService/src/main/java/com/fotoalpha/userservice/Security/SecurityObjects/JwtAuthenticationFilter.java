@@ -1,5 +1,6 @@
 package com.fotoalpha.userservice.Security.SecurityObjects;
 
+import com.fotoalpha.userservice.Security.Service.CustomUserDetailsService;
 import com.fotoalpha.userservice.Security.Service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,14 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractJwtFromCookie(request);
         if (token != null && jwtService.isTokenValid(token)) {
             String username = jwtService.extractUsername(token);
-            UserDetails ud = userDetailsService.loadUserByUsername(username);
+            UserDetails ud = customUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
                             ud,

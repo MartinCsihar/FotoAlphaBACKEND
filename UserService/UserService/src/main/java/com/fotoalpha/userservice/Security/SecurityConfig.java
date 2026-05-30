@@ -31,7 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/admin-api/**").hasRole("ADMIN")
-                        .requestMatchers("/test/**").permitAll()
+                        .requestMatchers("/test/**").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -48,8 +48,13 @@ public class SecurityConfig {
         return args -> {
             if (userRepo.count() == 0) {
                 User user = User.builder()
-                        .userID("MARTIN")
-                        .role("ROLE_ADMIN")
+                        .userID("MARTIN_ADMINISTRATOR")
+                        .password(passwordEncoder().encode("Csiharmartin25hu"))
+                        .email("martincsihar@gmail.com")
+                        .phoneNumber("+36308602406")
+                        .firstName("Csihar")
+                        .lastName("Martin")
+                        .role("ADMIN")
                         .build();
                 userRepo.save(user);
             }

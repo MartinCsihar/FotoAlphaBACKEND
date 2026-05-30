@@ -15,9 +15,9 @@ import java.util.Optional;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepo userRepo;
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with the given email: " + email));
+    public UserDetails loadUserByUsername(String userID) throws UsernameNotFoundException {
+        User user = userRepo.findByUserID(userID)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with the given email: " + userID));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUserID())
                 .password(user.getPassword())

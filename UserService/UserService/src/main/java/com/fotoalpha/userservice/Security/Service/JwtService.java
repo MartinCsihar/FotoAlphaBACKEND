@@ -25,7 +25,10 @@ public class JwtService {
 
     }
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject).split("\\:")[0];
+    }
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject).split("\\:")[1];
     }
 
     public String extractRole(String token) {
@@ -44,9 +47,10 @@ public class JwtService {
     }
     public String generateToken(User user) {
         return Jwts.builder()
-                .subject(user.getUserID())
+                .subject(user.getUserID()+":"+user.getEmail())
                 .claim("role", user.getRole())
                 .signWith(getSigningKey())
                 .compact();
+
     }
 }
