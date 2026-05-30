@@ -24,10 +24,6 @@ public class User {
     String phoneNumber;
     String role;
 
-    @PrePersist
-    public void prePersist() {
-        role = "ROLE_USER";
-    }
 
 
 }
