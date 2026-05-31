@@ -1,4 +1,4 @@
-package com.fotoalpha.awsservice.Controller.AdminController;
+package com.fotoalpha.awsservice.Controller;
 
 import com.fotoalpha.awsservice.Response.GetPhotosResponse;
 import com.fotoalpha.awsservice.Response.GetVideosResponse;

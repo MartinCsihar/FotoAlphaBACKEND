@@ -1,23 +1,32 @@
 package com.fotoalpha.userservice.Controller;
 
-import com.fotoalpha.userservice.Entity.User;
+import com.fotoalpha.userservice.Kafka.Producer;
+import com.fotoalpha.userservice.KafkaEvents.SendMailEvent;
 import com.fotoalpha.userservice.Requests.LoginRequest;
 import com.fotoalpha.userservice.Requests.RegisterRequest;
+import com.fotoalpha.userservice.Requests.UserPasswordResetReq;
 import com.fotoalpha.userservice.Security.Service.AuthService;
 import com.fotoalpha.userservice.Security.Service.RegistrationService;
+import com.fotoalpha.userservice.Requests.SendMailRequest;
+import com.fotoalpha.userservice.Service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private final Producer producer;
     private final RegistrationService registrationService;
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest req) {
@@ -31,8 +40,11 @@ public class AuthController {
         if (req.getEmail() == null) {
              jwt = authService.login(req.getUsername(), req.getPassword(), true);
         }
-        if(req.getUsername() == null) {
+        else if(req.getUsername() == null) {
             jwt = authService.login(req.getEmail(), req.getPassword(), false);
+        }
+        if(jwt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Hibás adat!");
         }
         Cookie cookie = new Cookie("jwt", jwt);
         cookie.setHttpOnly(true);
@@ -51,5 +63,14 @@ public class AuthController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return "Sikeres kijelentkezés!";
+    }
+    @PostMapping("/passwordResetEmail")
+    public ResponseEntity<?> sendMailForPwReset(@RequestBody SendMailRequest req) {
+        return new ResponseEntity<>(userService.sendPwResetMailEvent(req), HttpStatus.OK);
+    }
+
+    @PostMapping("/passwordReset")
+    public ResponseEntity<?> resetPassword(@RequestBody UserPasswordResetReq req){
+        return new ResponseEntity<>(userService.resetPassword(req), HttpStatus.OK);
     }
 }

@@ -1,6 +1,6 @@
 package com.fotoalpha.emailservice.Objects.Events;
 
-public record SendPwResetEvent(
+public record SendMailEvent(
         String email
 ) {
 }

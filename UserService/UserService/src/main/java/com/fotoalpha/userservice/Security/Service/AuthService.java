@@ -17,14 +17,13 @@ public class AuthService {
         User user = null;
         if (withUsername) {
             user = userRepo.findByUserID(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
-            return jwtService.generateToken(user);
+            if (passwordEncoder.matches(rawPassword,  user.getPassword()))  return jwtService.generateToken(user);
+            else return "";
         }
-        if (!withUsername) {
+        else if (!withUsername) {
             user = userRepo.findByEmail(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
-            return jwtService.generateToken(user);
-        }
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            if (passwordEncoder.matches(rawPassword,  user.getPassword()))  return jwtService.generateToken(user);
+            else return "";
         }
         return null;
     }
