@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/admin-api/**").hasRole("ADMIN")
+                        .requestMatchers("/admin-api/**").hasAuthority("ADMIN")
                         .requestMatchers("/test/**").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                 )
