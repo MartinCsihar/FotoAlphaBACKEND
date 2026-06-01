@@ -9,7 +9,9 @@ import com.fotoalpha.userservice.KafkaEvents.SendMailEvent;
 import com.fotoalpha.userservice.Repo.PassowordResetTokenRepo;
 import com.fotoalpha.userservice.Repo.UserRepo;
 import com.fotoalpha.userservice.Requests.SendMailRequest;
+import com.fotoalpha.userservice.Requests.UserModifyDataRequest;
 import com.fotoalpha.userservice.Requests.UserPasswordResetReq;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -78,5 +80,26 @@ public class UserService {
         userRepo.save(user);
         passowordResetTokenRepo.deleteById(token);
         return "Sikeresen megváltoztattad a jelszavad! Most visszairányítalak a belenetkezéshez!";
+    }
+
+    @Transactional
+    public String modifyUserData(UserModifyDataRequest req, String uid) {
+        User user = userRepo.findByUserID(uid)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found with the given userid: " + uid));
+        if (req.getFirstName() != null) {
+            user.setFirstName(req.getFirstName());
+        }
+        if (req.getLastName() != null) {
+            user.setLastName(req.getLastName());
+        }
+        if (req.getPhoneNum() != null) {
+            user.setPhoneNumber(req.getPhoneNum());
+        }
+        if (req.getEmail() != null) {
+            user.setEmail(req.getEmail());
+
+        }
+        userRepo.save(user);
+        return  "Sikeres adat modosítás!";
     }
 }

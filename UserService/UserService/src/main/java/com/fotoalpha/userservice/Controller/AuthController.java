@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -72,5 +73,9 @@ public class AuthController {
     @PostMapping("/passwordReset")
     public ResponseEntity<?> resetPassword(@RequestBody UserPasswordResetReq req){
         return new ResponseEntity<>(userService.resetPassword(req), HttpStatus.OK);
+    }
+    @GetMapping("/isLoggedIn")
+    public boolean isLoggedIn(Authentication auth) {
+        return auth != null;
     }
 }
