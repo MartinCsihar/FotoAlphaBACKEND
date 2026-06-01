@@ -3,14 +3,13 @@ package com.fotoalpha.userservice.Service;
 import com.fotoalpha.userservice.Entity.PasswordResetToken;
 import com.fotoalpha.userservice.Entity.User;
 import com.fotoalpha.userservice.Kafka.Producer;
+import com.fotoalpha.userservice.KafkaEvents.GalleryUpdatedEvent;
 import com.fotoalpha.userservice.KafkaEvents.GetUserDataEvent;
 import com.fotoalpha.userservice.KafkaEvents.GetUserDataEventResponse;
 import com.fotoalpha.userservice.KafkaEvents.SendMailEvent;
 import com.fotoalpha.userservice.Repo.PassowordResetTokenRepo;
 import com.fotoalpha.userservice.Repo.UserRepo;
-import com.fotoalpha.userservice.Requests.SendMailRequest;
-import com.fotoalpha.userservice.Requests.UserModifyDataRequest;
-import com.fotoalpha.userservice.Requests.UserPasswordResetReq;
+import com.fotoalpha.userservice.RequestsResponses.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -101,5 +101,65 @@ public class UserService {
         }
         userRepo.save(user);
         return  "Sikeres adat modosítás!";
+    }
+
+    public Integer numberOfUsers() {
+        Integer count = userRepo.countDistinct();
+        return count == null ? 0 : count;
+    }
+
+    public Map<String, Integer> numberOfPhotosVideos() {
+        Integer sumPhotos = userRepo.countPhotos();
+        Integer sumVideos = userRepo.countVideos();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("photos", sumPhotos);
+        map.put("videos", sumVideos);
+        return map;
+
+    }
+
+    public Object getAllUsers() {
+        List<GetUser> gu = userRepo.getUsers().stream().map(user -> {
+            return GetUser.builder()
+                    .username(user.getUserID())
+                    .email(user.getEmail())
+                    .phoneNumber(user.getPhoneNumber())
+                    .fullName(user.getLastName() + " " + user.getFirstName())
+                    .build();
+        }).toList();
+        if(gu.isEmpty()) return "Nincsenek felhasználók!";
+        return GetAllUsersResponse.builder()
+                .users(gu)
+                .build();
+    }
+
+    public Object getUser(String uid) {
+        User user = userRepo.findByUserID(uid)
+                .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given userid: " + uid));
+        GetUser gu = GetUser.builder()
+                .username(user.getUserID())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .fullName( user.getFirstName() + " " + user.getLastName() )
+                .build();
+        return user != null ? gu : "Nincs ilyen felhasználó!";
+    }
+
+
+    @Transactional
+    public Object saveNumOfPhotosAndOrVideosForUser(SaveCount req) {
+        User user = userRepo.findByEmail(req.getEmail())
+                .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given email: " + req.getEmail()));
+        user.setNumberOfPhotos(user.getNumberOfPhotos() + req.getPhotoCount());
+        user.setNumberOfVideos(user.getNumberOfVideos() + req.getVideoCount());
+        userRepo.save(user);
+        GalleryUpdatedEvent gue = GalleryUpdatedEvent.builder()
+                .firstname(user.getFirstName())
+                .photoCount(req.getPhotoCount())
+                .videoCount(req.getVideoCount())
+                .email(req.getEmail())
+                .build();
+        producer.sendGalleryUpdatedEvent(gue);
+        return "Sikeres mentés!";
     }
 }

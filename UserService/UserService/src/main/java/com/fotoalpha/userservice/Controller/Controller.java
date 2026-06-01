@@ -1,7 +1,7 @@
 package com.fotoalpha.userservice.Controller;
 
 
-import com.fotoalpha.userservice.Requests.UserModifyDataRequest;
+import com.fotoalpha.userservice.RequestsResponses.UserModifyDataRequest;
 import com.fotoalpha.userservice.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

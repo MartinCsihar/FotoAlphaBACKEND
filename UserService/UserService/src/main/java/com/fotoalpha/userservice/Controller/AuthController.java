@@ -1,24 +1,20 @@
 package com.fotoalpha.userservice.Controller;
 
 import com.fotoalpha.userservice.Kafka.Producer;
-import com.fotoalpha.userservice.KafkaEvents.SendMailEvent;
-import com.fotoalpha.userservice.Requests.LoginRequest;
-import com.fotoalpha.userservice.Requests.RegisterRequest;
-import com.fotoalpha.userservice.Requests.UserPasswordResetReq;
+import com.fotoalpha.userservice.RequestsResponses.LoginRequest;
+import com.fotoalpha.userservice.RequestsResponses.RegisterRequest;
+import com.fotoalpha.userservice.RequestsResponses.UserPasswordResetReq;
 import com.fotoalpha.userservice.Security.Service.AuthService;
 import com.fotoalpha.userservice.Security.Service.RegistrationService;
-import com.fotoalpha.userservice.Requests.SendMailRequest;
+import com.fotoalpha.userservice.RequestsResponses.SendMailRequest;
 import com.fotoalpha.userservice.Service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")

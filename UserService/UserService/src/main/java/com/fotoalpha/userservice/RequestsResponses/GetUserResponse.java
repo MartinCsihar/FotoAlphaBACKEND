@@ -1,13 +1,14 @@
-package com.fotoalpha.userservice.Requests;
+package com.fotoalpha.userservice.RequestsResponses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendMailRequest {
-    String email;
+@Data
+@Builder
+public class GetUserResponse {
+    GetUser getUser;
 }

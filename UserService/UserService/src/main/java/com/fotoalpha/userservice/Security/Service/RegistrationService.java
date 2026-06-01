@@ -2,7 +2,7 @@ package com.fotoalpha.userservice.Security.Service;
 
 import com.fotoalpha.userservice.Entity.User;
 import com.fotoalpha.userservice.Repo.UserRepo;
-import com.fotoalpha.userservice.Requests.RegisterRequest;
+import com.fotoalpha.userservice.RequestsResponses.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,8 @@ public class RegistrationService {
                 .phoneNumber(req.getPhoneNumber())
                 .userID(req.getUsername())
                 .numberOfPhotos(0)
+                .numberOfVideos(0)
+                .profilePictureUrl("")
                 .role("USER")
                 .build();
         userRepo.save(user);

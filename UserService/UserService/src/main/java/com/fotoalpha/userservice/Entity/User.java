@@ -16,12 +16,14 @@ public class User {
     @Id
     String userID;
     Integer numberOfPhotos;
+    Integer numberOfVideos;
     String email;
     String password;
     String firstName;
     String lastName;
     String phoneNumber;
     String role;
+    String profilePictureUrl;
 
 
 

@@ -1,4 +1,4 @@
-package com.fotoalpha.userservice.Requests;
+package com.fotoalpha.userservice.RequestsResponses;
 
 import lombok.Data;
 
