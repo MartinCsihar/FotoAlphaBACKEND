@@ -3,15 +3,13 @@ package com.fotoalpha.userservice.Service;
 import com.fotoalpha.userservice.Entity.PasswordResetToken;
 import com.fotoalpha.userservice.Entity.User;
 import com.fotoalpha.userservice.Kafka.Producer;
-import com.fotoalpha.userservice.KafkaEvents.GalleryUpdatedEvent;
-import com.fotoalpha.userservice.KafkaEvents.GetUserDataEvent;
-import com.fotoalpha.userservice.KafkaEvents.GetUserDataEventResponse;
-import com.fotoalpha.userservice.KafkaEvents.SendMailEvent;
+import com.fotoalpha.userservice.KafkaEvents.*;
 import com.fotoalpha.userservice.Repo.PassowordResetTokenRepo;
 import com.fotoalpha.userservice.Repo.UserRepo;
 import com.fotoalpha.userservice.RequestsResponses.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,11 @@ public class UserService {
     private final Producer producer;
     private final PassowordResetTokenRepo passowordResetTokenRepo;
     private final PasswordEncoder passwordEncoder;
+    @Value("${aws.bucketName}")
+    private String bucketName;
+    @Value("${aws.region}")
+    private String region;
+
 
     public void createGetUserDataResponse(GetUserDataEvent event) {
         User user = userRepo.findByUserID(event.UserID())
@@ -125,6 +128,7 @@ public class UserService {
                     .email(user.getEmail())
                     .phoneNumber(user.getPhoneNumber())
                     .fullName(user.getLastName() + " " + user.getFirstName())
+                    .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
                     .build();
         }).toList();
         if(gu.isEmpty()) return "Nincsenek felhasználók!";
@@ -141,6 +145,7 @@ public class UserService {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .fullName( user.getFirstName() + " " + user.getLastName() )
+                .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
                 .build();
         return user != null ? gu : "Nincs ilyen felhasználó!";
     }
@@ -161,5 +166,13 @@ public class UserService {
                 .build();
         producer.sendGalleryUpdatedEvent(gue);
         return "Sikeres mentés!";
+    }
+
+    @Transactional
+    public void saveProfPic(SaveProfilePictureEvent event){
+        User user = userRepo.findByUserID(event.uid())
+                .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given userid: " + event.uid()));
+        user.setKey(event.key());
+        userRepo.save(user);
     }
 }

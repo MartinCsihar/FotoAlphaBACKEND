@@ -27,7 +27,7 @@ public class RegistrationService {
                 .userID(req.getUsername())
                 .numberOfPhotos(0)
                 .numberOfVideos(0)
-                .profilePictureUrl("")
+                .key("")
                 .role("USER")
                 .build();
         userRepo.save(user);

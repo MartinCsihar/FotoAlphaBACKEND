@@ -1,4 +1,4 @@
-package com.fotoalpha.awsservice.Response;
+package com.fotoalpha.awsservice.RequestResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,7 @@
 package com.fotoalpha.userservice.Kafka;
 
 import com.fotoalpha.userservice.KafkaEvents.GetUserDataEvent;
+import com.fotoalpha.userservice.KafkaEvents.SaveProfilePictureEvent;
 import com.fotoalpha.userservice.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,5 +14,10 @@ public class Consumer {
     @KafkaListener(topics = "get-user-data", groupId = "user-service")
     public void consume(GetUserDataEvent event){
         userService.createGetUserDataResponse(event);
+    }
+
+    @KafkaListener(topics = "save-profile-picture", groupId = "user-service")
+    public void consume(SaveProfilePictureEvent event){
+        userService.saveProfPic(event);
     }
 }

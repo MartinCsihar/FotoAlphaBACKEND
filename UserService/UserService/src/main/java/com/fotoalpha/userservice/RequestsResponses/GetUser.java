@@ -14,4 +14,8 @@ public class GetUser {
     String fullName;
     String email;
     String phoneNumber;
+    String profPicUrl;
+    public static String getUrl(String bucketName, String region, String key){
+        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + key;
+    }
 }
