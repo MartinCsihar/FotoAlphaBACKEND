@@ -1,10 +1,7 @@
 package com.fotoalpha.appointmentsservice.Controller;
 
 import com.fotoalpha.appointmentsservice.Entity.Appointments;
-import com.fotoalpha.appointmentsservice.ResponseRequest.GetAllAppointmentsResponse;
-import com.fotoalpha.appointmentsservice.ResponseRequest.GetAppointmentByIdResponse;
-import com.fotoalpha.appointmentsservice.ResponseRequest.SaveOwnMadeWeddingAppointmentRequest;
-import com.fotoalpha.appointmentsservice.ResponseRequest.SavePairAppointmentRequest;
+import com.fotoalpha.appointmentsservice.ResponseRequest.*;
 import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,7 +38,7 @@ public class Controller {
     }
 
     @PostMapping("/savePairAppointment")
-    public ResponseEntity<Boolean> savePairAppointment(@RequestBody SavePairAppointmentRequest req, Authentication authentication) throws ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<Boolean> savePairAppointment(@RequestBody SavePairAppointmentRequest req, Authentication authentication) {
         try{
             String uid = authentication.getName().split("\\:")[0];
             return new ResponseEntity<>(appService.savePairAppointment(req, uid), HttpStatus.OK);
@@ -50,8 +47,17 @@ public class Controller {
         }
 
     }
+    @PostMapping("/saveWeddingAppointment")
+    public ResponseEntity<Boolean> saveWeddingAppointment(@RequestBody SaveWeddingAppointmentRequest req, Authentication authentication) {
+        try {
+            String uid = authentication.getName().split("\\:")[0];
+            return new ResponseEntity<>(appService.saveWeddingAppointment(req, uid), HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @PostMapping("/saveOwnMadeWeddingAppointment")
-    public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, Authentication authentication) throws ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, Authentication authentication) {
         try {
             String uid = authentication.getName().split("\\:")[0];
             return new ResponseEntity<>(appService.saveOwnMadeApp(req, uid), HttpStatus.OK);
