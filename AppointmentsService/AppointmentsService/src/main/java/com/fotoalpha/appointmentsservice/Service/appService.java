@@ -75,12 +75,12 @@ public class appService {
                 .build();
         producer.sendSaveAddressEvent(saveAddress);
 
-//        String correlationId = UUID.randomUUID().toString();
-//        GetUserDataEvent gude = GetUserDataEvent.builder()
-//                .UserID(uid)
-//                .correlationId(correlationId)
-//                .build();
-//        GetUserDataEventResponse guder = producer.requestUserData(gude);
+       String correlationId = UUID.randomUUID().toString();
+       GetUserDataEvent gude = GetUserDataEvent.builder()
+               .UserID(uid)
+               .correlationId(correlationId)
+               .build();
+       GetUserDataEventResponse guder = producer.requestUserData(gude);
 
         AppointmentCreatedEvent appCreatedEvent = AppointmentCreatedEvent.builder()
                 .pairLocations(bundle.getPairLocations())
@@ -92,21 +92,21 @@ public class appService {
                 .bundleName(bundle.getBundleSubType().toString())
                 .appointmentType(newApp.getType().toString())
                 .state("Elfogadva")
-                .userEmail("martincsihar@gmail.com")
-                .firstName("Csihar")
-                .lastName("Martin")
-                .phoneNumber("+36 30 860 2406")
-//                .userEmail(guder.email())
-//                .firstName(guder.firstName())
-//                .lastName(guder.lastName())
-//                .phoneNumber(guder.phoneNumber())
+//                .userEmail("martincsihar@gmail.com")
+//                .firstName("Csihar")
+//                .lastName("Martin")
+//                .phoneNumber("+36 30 860 2406")
+                .userEmail(guder.email())
+                .firstName(guder.firstName())
+                .lastName(guder.lastName())
+                .phoneNumber(guder.phoneNumber())
                 .build();
 
         producer.sendAppCreatedEvent(appCreatedEvent);
         return true;
     }
 
-    public Boolean saveWeddingAppointment(SaveWeddingAppointmentRequest req, String uid) {
+    public Boolean saveWeddingAppointment(SaveWeddingAppointmentRequest req, String uid) throws ExecutionException, InterruptedException, TimeoutException {
         Bundles bundle = bundleRepo.findById(Long.valueOf(req.getBundle())).orElse(null);
         Appointments newApp = Appointments.builder()
                 .appointmentDate(req.getAppointmentDate())
@@ -129,12 +129,12 @@ public class appService {
                 .build();
         producer.sendSaveAddressEvent(sae);
 
-//        String correlationId = UUID.randomUUID().toString();
-//        GetUserDataEvent gude = GetUserDataEvent.builder()
-//                .UserID(uid)
-//                .correlationId(correlationId)
-//                .build();
-//        GetUserDataEventResponse guder = producer.requestUserData(gude);
+        String correlationId = UUID.randomUUID().toString();
+        GetUserDataEvent gude = GetUserDataEvent.builder()
+                .UserID(uid)
+                .correlationId(correlationId)
+                .build();
+        GetUserDataEventResponse guder = producer.requestUserData(gude);
 
         AppointmentCreatedEvent appCreatedEvent = AppointmentCreatedEvent.builder()
                 .postalCode(address.getPostalCode())
@@ -149,21 +149,21 @@ public class appService {
                 .bundleName(bundle.getBundleSubType().toString())
                 .appointmentType(newApp.getType().toString())
                 .state("Elfogadva")
-                .userEmail("martincsihar@gmail.com")
-                .firstName("Csihar")
-                .lastName("Martin")
-                .phoneNumber("+36 30 860 2406")
-//                .userEmail(guder.email())
-//                .firstName(guder.firstName())
-//                .lastName(guder.lastName())
-//                .phoneNumber(guder.phoneNumber())
+//                .userEmail("martincsihar@gmail.com")
+//                .firstName("Csihar")
+//                .lastName("Martin")
+//                .phoneNumber("+36 30 860 2406")
+                .userEmail(guder.email())
+                .firstName(guder.firstName())
+                .lastName(guder.lastName())
+                .phoneNumber(guder.phoneNumber())
                 .build();
 
         producer.sendAppCreatedEvent(appCreatedEvent);
         return true;
     }
     @Transactional
-    public boolean saveOwnMadeApp(SaveOwnMadeWeddingAppointmentRequest req, String uid) {
+    public boolean saveOwnMadeApp(SaveOwnMadeWeddingAppointmentRequest req, String uid) throws ExecutionException, InterruptedException, TimeoutException {
         List<Events> choosenEvents = eventRepo.findAllById((req.getEventIds()));
         int bundlePrice = getBundlePrice(req, choosenEvents);
 
@@ -199,12 +199,12 @@ public class appService {
                 .build();
         producer.sendSaveAddressEvent(sae);
 
-        //        String correlationId = UUID.randomUUID().toString();
-        //        GetUserDataEvent gude = GetUserDataEvent.builder()
-        //                .UserID(uid)
-        //                .correlationId(correlationId)
-        //                .build();
-        //        GetUserDataEventResponse guder = producer.requestUserData(gude);
+        String correlationId = UUID.randomUUID().toString();
+        GetUserDataEvent gude = GetUserDataEvent.builder()
+                .UserID(uid)
+                .correlationId(correlationId)
+                .build();
+        GetUserDataEventResponse guder = producer.requestUserData(gude);
         AppointmentCreatedEvent appCreatedEvent = AppointmentCreatedEvent.builder()
                 .postalCode(address.getPostalCode())
                 .streetName(address.getStreetName())
@@ -218,14 +218,14 @@ public class appService {
                 .bundleName("SAJÁT")
                 .appointmentType("PERSONAL")
                 .state("Elfogadva")
-                .userEmail("martincsihar@gmail.com")
-                .firstName("Csihar")
-                .lastName("Martin")
-                .phoneNumber("+36 30 860 2406")
-//                .userEmail(guder.email())
-//                .firstName(guder.firstName())
-//                .lastName(guder.lastName())
-//                .phoneNumber(guder.phoneNumber())
+//                .userEmail("martincsihar@gmail.com")
+//                .firstName("Csihar")
+//                .lastName("Martin")
+//                .phoneNumber("+36 30 860 2406")
+                .userEmail(guder.email())
+                .firstName(guder.firstName())
+                .lastName(guder.lastName())
+                .phoneNumber(guder.phoneNumber())
                 .build();
 
         producer.sendAppCreatedEvent(appCreatedEvent);
@@ -253,8 +253,8 @@ public class appService {
 
     public Map<String, Integer> getTotalIncome() {
         Map<String, Integer> totalIncome = new HashMap<>();
-        int ownMade =appRepo.getTotalIncomeOwnMade();
-        int pairWedding =appRepo.getTotalIncomePairWedding();
+        Integer ownMade =appRepo.getTotalIncomeOwnMade() != null ? appRepo.getTotalIncomeOwnMade() : 0;
+        Integer pairWedding = appRepo.getTotalIncomePairWedding() != null ? appRepo.getTotalIncomePairWedding() : 0;
         totalIncome.put("own_made_wedding", ownMade);
         totalIncome.put("pair_wedding",pairWedding);
         totalIncome.put("total_income", ownMade + pairWedding);

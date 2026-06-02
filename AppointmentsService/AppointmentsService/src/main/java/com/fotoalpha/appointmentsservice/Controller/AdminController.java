@@ -8,6 +8,7 @@ import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,10 @@ import java.util.concurrent.TimeoutException;
 @RequiredArgsConstructor
 public class AdminController {
     private final appService appService;
-
+    @GetMapping("/test")
+    public String test(Authentication authentication) {
+        return " "+authentication.getName() + " " +  authentication.getAuthorities();
+    }
     @GetMapping("/totalIncome")
     public ResponseEntity<Map<String, Integer>> getTotalIncome(){
         return new ResponseEntity<>(appService.getTotalIncome(), HttpStatus.OK);

@@ -20,11 +20,11 @@ public interface AppRepo extends JpaRepository<Appointments, String> {
     int cancelAppointment(String appid, String userid);
 
     @Query(value = "select sum(b.bundle_price) as TotalIncome from appointments a inner join bundles b using(bundle_id)",nativeQuery = true)
-    int getTotalIncomePairWedding();
+    Integer getTotalIncomePairWedding();
 
     @Query(value = "select sum(pb.bundle_price) as TotalIncome from appointments a inner join personal_bundles pb \n" +
             "on a.personal_bundle_id = pb.id;",nativeQuery = true)
-    int getTotalIncomeOwnMade();
+    Integer getTotalIncomeOwnMade();
 
     @Query(value = "select count(*) as WeddingCount from appointments a inner join bundles b on a.bundle_id = b.bundle_id \n" +
             "where b.bundle_type = ?1;",nativeQuery = true)

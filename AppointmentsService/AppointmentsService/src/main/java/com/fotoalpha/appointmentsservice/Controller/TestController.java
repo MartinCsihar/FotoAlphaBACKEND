@@ -65,12 +65,16 @@ public class TestController {
         }
     }
     @PostMapping("/saveWeddingAppointment")
-    public ResponseEntity<Boolean> saveWeddingAppointment(@RequestBody SaveWeddingAppointmentRequest req, @RequestParam("uid") String uid){
-        return new ResponseEntity<>(appService.saveWeddingAppointment(req, uid), HttpStatus.OK);
+    public ResponseEntity<Boolean> saveWeddingAppointment(@RequestBody SaveWeddingAppointmentRequest req, @RequestParam("uid") String uid) throws ExecutionException, InterruptedException, TimeoutException {
+        try {
+            return new ResponseEntity<>(appService.saveWeddingAppointment(req, uid), HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/saveOwnMadeWeddingAppointment")
-    public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, @RequestParam String uid){
+    public ResponseEntity<Boolean> saveOwnMadeWeddingAppointment(@RequestBody SaveOwnMadeWeddingAppointmentRequest req, @RequestParam String uid) throws ExecutionException, InterruptedException, TimeoutException {
         return new ResponseEntity<>(appService.saveOwnMadeApp(req, uid), HttpStatus.OK);
     }
 
