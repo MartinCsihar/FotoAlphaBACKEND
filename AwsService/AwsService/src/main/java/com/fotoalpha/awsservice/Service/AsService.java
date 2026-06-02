@@ -1,10 +1,13 @@
 package com.fotoalpha.awsservice.Service;
 
+import com.fotoalpha.awsservice.Events.SavePhotosEvent;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -26,15 +30,18 @@ public class AsService {
 
     @Value("${aws.bucket.name}")
     private String bucketName;
+    @Value("${aws.region}")
+    private String region;
+
 
     public List<String> getAllPhotos(String username) {
         String prefixPhotos = username+"/PHOTOS/";
-        return getPresigendURLs(prefixPhotos);
+        return getNormalUrls(prefixPhotos);
     }
 
     public List<String> getAllVideos(String username) {
         String prefixVideos = username+"/VIDEOS/";
-        return getPresigendURLs(prefixVideos);
+        return getNormalUrls(prefixVideos);
     }
 
     public void downloadPhotosZip(String username, HttpServletResponse response) throws IOException {
@@ -73,6 +80,13 @@ public class AsService {
                 .build());
         return preReq.url().toString();
     }
+    private List<String> getNormalUrls(String prefix){
+        ListObjectsV2Response res = s3Client.listObjectsV2(ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .prefix(prefix)
+                .build());
+        return  res.contents().stream().map(s3obj -> "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + s3obj.key()).toList();
+    }
 
     public List<String> getPresigendURLs(String prefix){
         List<String>  presignedURLs = new ArrayList<>();
@@ -102,5 +116,4 @@ public class AsService {
                 .build());
         return res.contents().stream().map(S3Object::key).toList();
     }
-
 }

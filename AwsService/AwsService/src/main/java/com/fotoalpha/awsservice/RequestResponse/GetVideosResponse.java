@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class GetVideosResponse {
-    List<String> presignedVideoUrls;
+    List<String> videoUrls;
 }

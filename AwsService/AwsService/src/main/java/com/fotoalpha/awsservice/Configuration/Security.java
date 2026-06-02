@@ -27,7 +27,8 @@ public class Security {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/health").permitAll()
-                        .requestMatchers("/admin-api/**").permitAll()
+                        .requestMatchers("/about").permitAll()
+                        .requestMatchers("/admin-api/**").hasAuthority("ADMIN")
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

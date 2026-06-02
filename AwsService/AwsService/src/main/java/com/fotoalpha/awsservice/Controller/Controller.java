@@ -1,7 +1,7 @@
 package com.fotoalpha.awsservice.Controller;
 
-import com.fotoalpha.awsservice.Response.GetPhotosResponse;
-import com.fotoalpha.awsservice.Response.GetVideosResponse;
+import com.fotoalpha.awsservice.RequestResponse.GetPhotosResponse;
+import com.fotoalpha.awsservice.RequestResponse.GetVideosResponse;
 import com.fotoalpha.awsservice.Service.AsService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,34 +21,37 @@ import java.io.IOException;
 public class Controller {
     private final AsService asService;
 
+    @GetMapping("/auth")
+    public String getAuth(Authentication authentication){
+        return authentication.getName() + " " + authentication.getAuthorities().toString();
+    }
 
     @GetMapping("/getAllPhotos")
     public ResponseEntity<GetPhotosResponse> getAllPhotos() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return new ResponseEntity<>(new GetPhotosResponse(asService.getAllPhotos(username)), HttpStatus.OK);
-
+       String uid = authentication.getName().split("\\:")[0];
+        return new ResponseEntity<>(new GetPhotosResponse(asService.getAllPhotos(uid)), HttpStatus.OK);
     }
 
     @GetMapping("/getAllVideos")
     public ResponseEntity<GetVideosResponse> getAllVideos() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return new ResponseEntity<>(new GetVideosResponse(asService.getAllVideos(username)), HttpStatus.OK);
+       String uid = authentication.getName().split("\\:")[0];
+        return new ResponseEntity<>(new GetVideosResponse(asService.getAllVideos(uid)), HttpStatus.OK);
     }
 
     @GetMapping("/downloadAllPhotos")
     public void downloadPhotos(HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        asService.downloadPhotosZip(username, response);
+       String uid = authentication.getName().split("\\:")[0];
+        asService.downloadPhotosZip(uid, response);
     }
 
     @GetMapping("/downloadAllVideos")
     public void downloadVideos(HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        asService.downloadVideosZip(username, response);
+       String uid = authentication.getName().split("\\:")[0];
+        asService.downloadVideosZip(uid, response);
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class GetPhotosResponse {
-    List<String> presignedPhotoUrls;
+    List<String> photoUrls;
 
 
 }
