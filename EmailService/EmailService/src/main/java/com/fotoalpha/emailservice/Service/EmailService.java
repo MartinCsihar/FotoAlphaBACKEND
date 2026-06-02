@@ -25,9 +25,31 @@ public class EmailService {
     public String sendMeMail(SendMeEmailRequest sendMeEmailRequest) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-
+        String htmlContent = """
+                                <html>
+                                        <head>
+                                            <meta charset="UTF-8">
+                                        </head>
+                                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                                               <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                               		<div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                                                   	 	<h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                                                    	<p style="margin: 10px 0 0 0; opacity: 0.8;">Üzenet</p>
+                                               		</div>
+                                                    <div style="padding: 30px">
+                                                        <p><strong>Kedves</strong> Martin!</p>
+                                                        <p><strong>%s</strong> küldött egy üzenetet:</p>
+                                                        <div style="background-color: whitesmoke; width: 100%%; height: 150px; overflow: hidden; padding: px; border-radius:10px; word-wrap:break-word;overflow-wrap: break-word;">
+                                                        	<p style="margin:10px; display:block; "><i>%s</i></p>
+                                                        </div>
+                                                        <p><strong>%s</strong> emailcíme: %s</p>
+                                                    </div>
+                                               </div>
+                                        </body>
+                                        </html>
+        """.formatted(sendMeEmailRequest.getFirstName(), sendMeEmailRequest.getMessage(), sendMeEmailRequest.getFirstName(),sendMeEmailRequest.getUserEmail());
         mimeMessageHelper.setTo(mailSenderPrivateEmail);
-        mimeMessageHelper.setText( sendMeEmailRequest.getSubject() + "\n" + sendMeEmailRequest.getMessage()+ "\n" + sendMeEmailRequest.getUserEmail(), false);
+        mimeMessageHelper.setText( htmlContent, true);
         mimeMessageHelper.setSubject("Egy felhasználó üzenetet küldött! - FotoAlpha");
 
         mailSender.send(mimeMessage);
