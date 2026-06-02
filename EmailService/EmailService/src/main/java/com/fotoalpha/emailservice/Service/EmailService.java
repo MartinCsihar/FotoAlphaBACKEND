@@ -1,8 +1,9 @@
 package com.fotoalpha.emailservice.Service;
 
-import com.fotoalpha.emailservice.Objects.Events.AppointmentCreatedEvent;
-import com.fotoalpha.emailservice.Objects.Events.SendPwResetEvent;
-import com.fotoalpha.emailservice.Objects.SendMeEmailRequest;
+import com.fotoalpha.emailservice.KafkaEvents.AppointmentCreatedEvent;
+import com.fotoalpha.emailservice.KafkaEvents.GalleryUpdatedEvent;
+import com.fotoalpha.emailservice.KafkaEvents.SendMailEvent;
+import com.fotoalpha.emailservice.SendMeEmailRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Slf4j
 @Service
@@ -40,19 +38,6 @@ public class EmailService {
     public String sendAppointmentCreatedEmail(AppointmentCreatedEvent event) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-
-        String userEmail = event.userEmail();
-        Integer price = event.price();
-        String firstName = event.firstName();
-        String lastName = event.lastName();
-        String telNum = event.phoneNumber();
-        String appointmentId = event.appointmentId();
-        LocalDate orderDate = event.orderDate();
-        LocalDate appointmentDate = event.appointmentDate();
-        LocalTime appointmentTime = event.appointmentTime();
-        String bundleName = event.bundleName();
-        String appointmentType = event.appointmentType();
-        String state = event.state();
         String finalLocation = (event.pairLocations() == null || event.pairLocations().isEmpty())
                 ? "Budapest " + event.postalCode() + " " + event.streetName() + " " + event.streetType() + " " + event.houseNumber()
                 : event.pairLocations();
@@ -124,7 +109,7 @@ public class EmailService {
                         </body>
                         </html>
                 """.formatted(
-                event.firstName(), event.lastName(),
+                event.lastName(), event.firstName(),
                 event.appointmentId(),
                 event.appointmentType(),
                 event.appointmentDate(), event.appointmentTime(),
@@ -148,18 +133,6 @@ public class EmailService {
         MimeMessage mimeMessageForAdmin = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessageForAdmin, true, "UTF-8");
 
-        String userEmail = event.userEmail();
-        Integer price = event.price();
-        String firstName = event.firstName();
-        String lastName = event.lastName();
-        String telNum = event.phoneNumber();
-        String appointmentId = event.appointmentId();
-        LocalDate orderDate = event.orderDate();
-        LocalDate appointmentDate = event.appointmentDate();
-        LocalTime appointmentTime = event.appointmentTime();
-        String bundleName = event.bundleName();
-        String appointmentType = event.appointmentType();
-        String state = event.state();
         String finalLocation = (event.pairLocations() == null || event.pairLocations().isEmpty())
                 ? "Budapest " + event.postalCode() + " " + event.streetName() + " " + event.streetType() + " " + event.houseNumber()
                 : event.pairLocations();
@@ -249,14 +222,64 @@ public class EmailService {
         mailSender.send(mimeMessageForAdmin);
     }
 
-    public void sendPwResetEmail(SendPwResetEvent event) throws MessagingException {
+    public void sendPwResetEmail(SendMailEvent event) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        String passwordResetUrl = "https://www.fotoalpha.hu/passwordReset";
+        String passwordResetUrl = "https://www.fotoalpha.hu/passwordReset?token="+event.resetID()+"&email="+event.email();
+        String htmlContent = """
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                </head>
+                <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                       <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                       		<div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                           	 	<h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                            	<p style="margin: 10px 0 0 0; opacity: 0.8;">Elfelejtett jelszó</p>
+                       		</div>
+                            <div style="padding: 30px">
+                                <p><strong>Elfelejtetted</strong> a jelszavad? Sebaj, erre a linkre kattintva azonnal megváltoztathatod!</p>
+                                <div style="padding: 4px; border-radius:20px; background-color: whitesmoke; width: 100%%; height: 100%%; text-align: center; ">
+                                	<p style="color: blue;">%s</p>
+                                </div>
+                            </div>
+                       </div>
+                </body>
+                </html>
+                """.formatted(passwordResetUrl);
+
         helper.setTo(event.email());
         helper.setSubject("Jelszó visszaállítás - FotoAlpha");
-        helper.setText("Üdv!  Kattints az alábbi linkre, hogy megváltoztathasd a jelszavad! \n ----> " + passwordResetUrl);
+        helper.setText(htmlContent, true);
+        mailSender.send(mimeMessage);
+    }
+
+    public void sendGalleryUpdatedEvent(GalleryUpdatedEvent event) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        String htmlContent = """
+                                <html>
+                                        <head>
+                                            <meta charset="UTF-8">
+                                        </head>
+                                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                                               <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                               		<div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                                                   	 	<h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                                                    	<p style="margin: 10px 0 0 0; opacity: 0.8;">Galéria állapotváltozás</p>
+                                               		</div>
+                                                    <div style="padding: 30px">
+                                                        <p><strong>Kedves</strong> %s!</p>
+                                                        <p><strong>Martin</strong> az imént töltötte fel galériád <strong>%s db</strong> képpel, és <strong>%s db</strong> videóval!</p>
+                                                    </div>
+                                               </div>
+                                        </body>
+                                        </html>
+        """.formatted(event.firstName(),event.photoCount(),event.videoCount());
+        helper.setSubject("Frissült a galériád! - FotoAlpha");
+        helper.setTo(event.email());
+        helper.setText(htmlContent, true);
         mailSender.send(mimeMessage);
     }
 }

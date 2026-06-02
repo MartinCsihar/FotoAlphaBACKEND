@@ -1,7 +1,8 @@
 package com.fotoalpha.emailservice.Kafka;
 
-import com.fotoalpha.emailservice.Objects.Events.AppointmentCreatedEvent;
-import com.fotoalpha.emailservice.Objects.Events.SendPwResetEvent;
+import com.fotoalpha.emailservice.KafkaEvents.AppointmentCreatedEvent;
+import com.fotoalpha.emailservice.KafkaEvents.GalleryUpdatedEvent;
+import com.fotoalpha.emailservice.KafkaEvents.SendMailEvent;
 import com.fotoalpha.emailservice.Service.EmailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,12 @@ public class Consumer {
     }
 
     @KafkaListener(topics = "pw-reset-send-email", groupId = "email-service")
-    public void consumePwResetSendEmail(SendPwResetEvent event) throws MessagingException {
+    public void consumePwResetSendEmail(SendMailEvent event) throws MessagingException {
             emailService.sendPwResetEmail(event);
+    }
+
+    @KafkaListener(topics = "gallery-updated", groupId = "email-service")
+    public void consumeGalleryUpdated(GalleryUpdatedEvent event) throws MessagingException {
+        emailService.sendGalleryUpdatedEvent(event);
     }
 }

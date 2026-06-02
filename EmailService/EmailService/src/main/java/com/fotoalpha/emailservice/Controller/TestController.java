@@ -1,6 +1,6 @@
 package com.fotoalpha.emailservice.Controller;
 
-import com.fotoalpha.emailservice.Objects.Events.AppointmentCreatedEvent;
+import com.fotoalpha.emailservice.KafkaEvents.AppointmentCreatedEvent;
 import com.fotoalpha.emailservice.Service.EmailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;

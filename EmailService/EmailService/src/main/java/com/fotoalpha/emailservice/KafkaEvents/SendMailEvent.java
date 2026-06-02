@@ -1,6 +1,8 @@
-package com.fotoalpha.emailservice.Objects.Events;
+package com.fotoalpha.emailservice.KafkaEvents;
+
 
 public record SendMailEvent(
-        String email
+        String email,
+        String resetID
 ) {
 }

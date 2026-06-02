@@ -1,4 +1,4 @@
-package com.fotoalpha.emailservice.Objects.Events;
+package com.fotoalpha.emailservice.KafkaEvents;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

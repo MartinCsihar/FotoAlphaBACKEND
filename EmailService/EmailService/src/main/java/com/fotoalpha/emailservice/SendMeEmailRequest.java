@@ -1,4 +1,4 @@
-package com.fotoalpha.emailservice.Objects;
+package com.fotoalpha.emailservice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
