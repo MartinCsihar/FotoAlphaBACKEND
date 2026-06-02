@@ -9,6 +9,6 @@ import java.util.List;
 @Component
 @Data
 @AllArgsConstructor
-public class GetPairPhotosResponse {
-    List<String> porfolioPairPhotos;
+public class GetPhotosResponse {
+    List<String> portfolioPhotos;
 }

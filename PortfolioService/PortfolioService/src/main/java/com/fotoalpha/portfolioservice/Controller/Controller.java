@@ -1,7 +1,6 @@
 package com.fotoalpha.portfolioservice.Controller;
 
-import com.fotoalpha.portfolioservice.Response.GetPairPhotosResponse;
-import com.fotoalpha.portfolioservice.Response.GetWeddingPhotosResponse;
+import com.fotoalpha.portfolioservice.Response.GetPhotosResponse;
 import com.fotoalpha.portfolioservice.Service.PfService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,20 +14,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class Controller {
     private final PfService pfService;
 
-    @GetMapping("/getPairPhotos")
-    public ResponseEntity<GetPairPhotosResponse> getPairPhotos(@RequestParam("count") int count) {
-        List<String> querriedPhotos = pfService.getPairPhotos(count);
-        return new  ResponseEntity<>(new GetPairPhotosResponse(querriedPhotos), HttpStatus.OK);
+    @GetMapping("/getPortfolioPhotos")
+    public ResponseEntity<?> getPortfolioPhotos(@RequestParam("count") int count,
+                                                               @RequestParam("type") String type) {
+        List<String> querriedPhotos = pfService.getPortfolioPhotos(count, type);
+        return new  ResponseEntity<>(new GetPhotosResponse(querriedPhotos), HttpStatus.OK);
     }
 
-    @GetMapping("/getWeddingPhotos")
-    public ResponseEntity<GetWeddingPhotosResponse> getWeddingPhotos(@RequestParam("count") int count) {
-        List<String> querriedPhotos = pfService.getWeddingPhotos(count);
-        return new ResponseEntity<>(new GetWeddingPhotosResponse(querriedPhotos), HttpStatus.OK);
-    }
 
 }

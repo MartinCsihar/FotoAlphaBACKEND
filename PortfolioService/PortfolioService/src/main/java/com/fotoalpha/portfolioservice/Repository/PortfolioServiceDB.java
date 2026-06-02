@@ -11,10 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface PortfolioServiceDB extends JpaRepository<Portfolio, UUID> {
-    @Query(value = "SELECT PhotoURL FROM Portfolio WHERE PhotoType = 'Pair' LIMIT ?1;", nativeQuery = true)
-    List<String> getPairPhotos(int count);
-
-    @Query(value = "SELECT PhotoURL FROM Portfolio WHERE PhotoType = 'Wedding' LIMIT ?1", nativeQuery = true)
-    List<String> getWeddingPhotos(int count);
-
+    @Query(value = "SELECT photo_url FROM Portfolio WHERE photo_type LIKE(?2) LIMIT ?1", nativeQuery = true)
+    List<String> getPortfolioPhotos(int count, String type);
 }
