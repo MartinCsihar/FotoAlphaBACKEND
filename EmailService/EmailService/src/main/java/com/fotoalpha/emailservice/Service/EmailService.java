@@ -65,80 +65,74 @@ public class EmailService {
                 : event.pairLocations();
         String htmlContent = """
                 <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <meta charset="UTF-8">
-                        </head>
-                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
-                            <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                <div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
-                                    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
-                                    <p style="margin: 10px 0 0 0; opacity: 0.8;">Időpontfoglalásod rögzítve</p>
-                                </div>
-                                <div style="padding: 30px;">
-                                    <p>Kedves <strong>%s %s</strong>!</p>
-                                    <p>Köszönöm, hogy a FotoAlpha-t választottad a különleges pillanataid megörökítéséhez. A foglalásodat rögzítettem</p>
-                                    <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
-                                    <table style="width: 100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Típus:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Időpont:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s, %s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Helyszín:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Csomag:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Ár:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%d Ft</td>
-                                        </tr>
-                                    </table>
-                                    <table style="width: 100%%; border-collapse: collapse; margin-top: 20px;">
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Teljes név:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s %s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Telefonszám:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Email:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Foglalás:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #777;">
-                                    <p>© 2026 FotoAlpha - Csihar Martin</p>
-                                </div>
-                            </div>
-                        </body>
-                        </html>
+                     <html>
+                     <head>
+                         <meta charset="UTF-8">
+                     </head>
+                     <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                             <div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                                 <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                                 <p style="margin: 10px 0 0 0; opacity: 0.8;">Időpontfoglalásod rögzítve</p>
+                             </div>
+                             <div style="padding: 30px;">
+                                 <p>Kedves <strong>Martin</strong>!</p>
+                                 <p><strong>%s %s</strong> imént adott le egy új foglalást!</p>
+                                 <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
+                                 <table style="width:100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
+                                     <tr style="background-color: #f8f9fa;">
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                     </tr>
+                                     <tr style="background-color: #f8f9fa;">
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Időpont:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s, %s</td>
+                                     </tr>
+                                     <tr>
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Helyszín:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                     </tr>
+                                     <tr style="background-color: #f8f9fa;">
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Csomag:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                     </tr>
+                                     <tr>
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Ár:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s Ft</td>
+                                     </tr>
+                                     <table style="width:100%%; max-width:100%%; border-collapse: collapse; table-layout: fixed; margin-top: 20px;">
+                                         <tr style="background-color: #f8f9fa;">
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Teljes név:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee;">%s %s</td>
+                                         </tr>
+                                         <tr>
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Telefonszám:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                         </tr>
+                                         <tr style="background-color: #f8f9fa;">
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Email:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee; word-break: break-word; overflow-wrap: break-word;">%s</td>
+                                         </tr>
+                                         <tr>
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Foglalás:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                         </tr>
+                                     </table>
+                             </div>
+                             <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #777;">
+                                 <p>© 2026 FotoAlpha - Csihar Martin</p>
+                             </div>
+                         </div>
+                     </body>
+                     </html>
                 """.formatted(
                 event.lastName(), event.firstName(),
                 event.appointmentId(),
-                event.appointmentType(),
                 event.appointmentDate(), event.appointmentTime(),
                 finalLocation,
                 event.bundleName(),
                 event.price(),
-                event.firstName(), event.lastName(),
+                event.lastName(), event.firstName(),
                 event.phoneNumber(),
                 event.userEmail(),
                 event.orderDate()
@@ -159,81 +153,75 @@ public class EmailService {
                 ? "Budapest " + event.postalCode() + " " + event.streetName() + " " + event.streetType() + " " + event.houseNumber()
                 : event.pairLocations();
         String htmlContent = """
-                <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <meta charset="UTF-8">
-                        </head>
-                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
-                            <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                <div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
-                                    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
-                                    <p style="margin: 10px 0 0 0; opacity: 0.8;">Időpontfoglalásod rögzítve</p>
-                                </div>
-                                <div style="padding: 30px;">
-                                    <p>Kedves <strong>Martin</strong>!</p>
-                                    <p><strong>%s %s</strong> imént adott le egy új foglalást!</p>
-                                    <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
-                                    <table style="width: 100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Típus:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Időpont:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s, %s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Helyszín:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Csomag:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Ár:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%d Ft</td>
-                                        </tr>
-                                    </table>
-                                    <table style="width: 100%%; border-collapse: collapse; margin-top: 20px;">
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Teljes név:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s, %s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Telefonszám:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr style="background-color: #f8f9fa;">
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Email:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Foglalás:</td>
-                                            <td style="padding: 12px; border: 1px solid #eee;">%s</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #777;">
-                                    <p>© 2026 FotoAlpha - Csihar Martin</p>
-                                </div>
-                            </div>
-                        </body>
-                        </html>
+                                <!DOCTYPE html>
+                     <html>
+                     <head>
+                         <meta charset="UTF-8">
+                     </head>
+                     <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                             <div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                                 <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                                 <p style="margin: 10px 0 0 0; opacity: 0.8;">Időpontfoglalásod rögzítve</p>
+                             </div>
+                             <div style="padding: 30px;">
+                                 <p>Kedves <strong>Martin</strong>!</p>
+                                 <p><strong>%s %s</strong> imént adott le egy új foglalást!</p>
+                                 <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
+                                 <table style="width:100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
+                                     <tr style="background-color: #f8f9fa;">
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                     </tr>
+                                     <tr style="background-color: #f8f9fa;">
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Időpont:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s, %s</td>
+                                     </tr>
+                                     <tr>
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Helyszín:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                     </tr>
+                                     <tr style="background-color: #f8f9fa;">
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Csomag:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                     </tr>
+                                     <tr>
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Ár:</td>
+                                         <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s Ft</td>
+                                     </tr>
+                                     <table style="width:100%%; max-width:100%%; border-collapse: collapse; table-layout: fixed; margin-top: 20px;">
+                                         <tr style="background-color: #f8f9fa;">
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Teljes név:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee;">%s %s</td>
+                                         </tr>
+                                         <tr>
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Telefonszám:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                         </tr>
+                                         <tr style="background-color: #f8f9fa;">
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Email:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee; word-break: break-word; overflow-wrap: break-word;">%s</td>
+                                         </tr>
+                                         <tr>
+                                             <td style="padding: 12px; border: 1px solid #eee; font-weight: bold;">Foglalás:</td>
+                                             <td style="padding: 12px; border: 1px solid #eee;">%s</td>
+                                         </tr>
+                                     </table>
+                             </div>
+                             <div style="background-color: #f4f4f4; padding: 20px; text-align: center; font-size: 12px; color: #777;">
+                                 <p>© 2026 FotoAlpha - Csihar Martin</p>
+                             </div>
+                         </div>
+                     </body>
+                     </html>
                 """.formatted(
                 event.lastName(), event.firstName(),
                 event.appointmentId(),
-                event.appointmentType(),
                 event.appointmentDate(), event.appointmentTime(),
                 finalLocation,
                 event.bundleName(),
                 event.price(),
-                event.firstName(), event.lastName(),
+                event.lastName(), event.firstName(),
                 event.phoneNumber(),
                 event.userEmail(),
                 event.orderDate()
