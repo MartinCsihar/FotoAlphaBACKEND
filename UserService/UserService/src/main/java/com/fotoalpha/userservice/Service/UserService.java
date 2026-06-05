@@ -159,7 +159,7 @@ public class UserService {
         user.setNumberOfVideos(user.getNumberOfVideos() + req.getVideoCount());
         userRepo.save(user);
         GalleryUpdatedEvent gue = GalleryUpdatedEvent.builder()
-                .firstname(user.getFirstName())
+                .firstName(user.getFirstName())
                 .photoCount(req.getPhotoCount())
                 .videoCount(req.getVideoCount())
                 .email(req.getEmail())

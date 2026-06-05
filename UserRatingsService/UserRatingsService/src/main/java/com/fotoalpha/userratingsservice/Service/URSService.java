@@ -61,8 +61,9 @@ public class URSService {
         }
     }
 
-    public FetchAllRatingsResponse getRatings() throws ExecutionException, InterruptedException, TimeoutException {
+    public Object getRatings() throws ExecutionException, InterruptedException, TimeoutException {
         List<String> appIds = ursRepo.getAllAppointmentIds();
+        if (appIds.isEmpty()) { return "Még nincs értékelés! Legyél az első! :)";}
         AppInfoReqEvent appInfoReqEvent = AppInfoReqEvent.builder()
                 .correlationId(UUID.randomUUID().toString())
                 .appIds(appIds)

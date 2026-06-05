@@ -23,16 +23,6 @@ services:
         depends_on:
             eureka-server:
                 condition: service_healthy
-            aws-service:
-                condition: service_healthy
-            portfolio-service:
-                condition: service_healthy
-            email-service:
-                condition: service_healthy
-            appointments-service:
-                condition: service_healthy
-            address-service:
-                condition: service_healthy
         environment:
             - SPRING_APPLICATION_NAME=api-gateway
             - SERVER_PORT=8081
@@ -139,19 +129,21 @@ services:
         env_file:
             - .env
         environment:
-            -  SPRING_APPLICATION_NAME=aws-service
-            -  SERVER_PORT=8083
-            -  EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
-            -  AWS_BUCKET_NAME=${AWS_BCKT_NAME}
-            -  AWS_REGION=${AWS_REGION}
-            -  AWS_CREDENTIALS_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
-            -  AWS_CREDENTIALS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
-            -  JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}
-            -  SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
-            -  SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=savePhotos:com.fotoalpha.awsservice.Events.SavePhotosEvent
-            -  SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
-            -  SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
-            -  SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_APPLICATION_NAME=aws-service
+            - SERVER_PORT=8083
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+            - AWS_BUCKET_NAME=${AWS_BCKT_NAME}
+            - AWS_REGION=${AWS_REGION}
+            - AWS_CREDENTIALS_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
+            - AWS_CREDENTIALS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+            - JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=savePhotos:com.fotoalpha.awsservice.Events.SavePhotosEvent,saveProfPic:com.fotoalpha.awsservice.Events.SaveProfilePictureEvent
+            - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+            - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=50MB
+            - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=50MB
         healthcheck:
             test: ["CMD", "curl", "-f" ,"http://localhost:8083/health"]
             interval: 10s
@@ -179,7 +171,7 @@ services:
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
-            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appCreated:com.fotoalpha.emailservice.Objects.Events.AppointmentCreatedEvent, pwResetEmail:com.fotoalpha.emailservice.Objects.Events.SendPwResetEvent
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appCreated:com.fotoalpha.emailservice.KafkaEvents.AppointmentCreatedEvent,pwReset:com.fotoalpha.emailservice.KafkaEvents.SendMailEvent,galleryUpdated:com.fotoalpha.emailservice.KafkaEvents.GalleryUpdatedEvent
             - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
             - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
             - SPRING_KAFKA_CONSUMER_GROUP_ID=email-service
@@ -190,6 +182,7 @@ services:
             interval: 10s
             timeout: 3s
             retries: 10
+        
 
     address-service:
         build: ./AddressService/AddressService
@@ -222,8 +215,6 @@ services:
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest      
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent,deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent
-            - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_KAFKA=DEBUG
-            - LOGGING_LEVEL_ORG_APACHE_KAFKA=DEBUG
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8085/health"]
             interval: 10s
@@ -269,5 +260,89 @@ services:
             interval: 10s
             timeout: 3s
             retries: 10
+    userratings-service:
+        build: ./UserRatingsService/UserRatingsService
+        container_name: userratings_service
+        ports:
+            - "8087:8087"
+        env_file:
+            - .env
+        depends_on:
+            postgres:
+                condition: service_healthy
+            kafka:
+                condition: service_healthy
+            eureka-server:
+                condition: service_healthy         
+        environment:
+            - SPRING_APPLICATION_NAME=userratings_service
+            - SERVER_PORT=8087
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            - JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=admin
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/UserRatingsService
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=userratings-service
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
+            - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+            - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appInfoReq:com.fotoalpha.userratingsservice.KafkaEvents.AppInfoReqEvent
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
+            - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+            - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appInfoRes:com.fotoalpha.userratingsservice.KafkaEvents.AppInfoResEvent
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8087/health"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+    
+    user-service:
+        build: ./UserService/UserService
+        container_name: user_service
+        env_file:
+            - .env
+        depends_on:
+            postgres:
+                condition: service_healthy
+            eureka-server:
+                condition: service_healthy
+        ports:
+            - "8088:8088"
+        environment:
+            - SPRING_APPLICATION_NAME=user-service
+            - SERVER_PORT=8088
+            - JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}
+            - AWS_REGION=${AWS_REGION}
+            - AWS_BUCKETNAME=${AWS_BCKT_NAME}
+            - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+            - SPRING_DATASOURCE_USERNAME=postgres
+            - SPRING_DATASOURCE_PASSWORD=admin
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/UserService
+            - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
+            - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+            - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userDataResponse:com.fotoalpha.userservice.KafkaEvents.GetUserDataEventResponse,pwReset:com.fotoalpha.userservice.KafkaEvents.SendMailEvent,galleryUpdated:com.fotoalpha.userservice.KafkaEvents.GalleryUpdatedEvent
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
+            - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
+            - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=user-service
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userData:com.fotoalpha.userservice.KafkaEvents.GetUserDataEvent,saveProfPic:com.fotoalpha.userservice.KafkaEvents.SaveProfilePictureEvent
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+
 volumes:
     pgdata: 

@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record GalleryUpdatedEvent(
-        String firstname,
+        String firstName,
         String email,
         int photoCount,
         int videoCount

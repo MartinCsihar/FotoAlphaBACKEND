@@ -18,11 +18,11 @@ import java.util.concurrent.TimeoutException;
 public class AboutMeController {
     private final URSService ursService;
     @GetMapping("/getAllRatings")
-    public ResponseEntity<FetchAllRatingsResponse> getRatings() throws ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<?> getRatings() {
         try {
             return new ResponseEntity<>(ursService.getRatings(), HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ResponseEntity<>("Hiba történt: " + e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

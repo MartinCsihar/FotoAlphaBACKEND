@@ -37,7 +37,7 @@ public class TestController {
     }
 
     @GetMapping("/getAllRatings")
-    public ResponseEntity<FetchAllRatingsResponse> getRatings() throws ExecutionException, InterruptedException, TimeoutException {
+    public ResponseEntity<?> getRatings() throws ExecutionException, InterruptedException, TimeoutException {
         try {
             return new ResponseEntity<>(ursService.getRatings(), HttpStatus.OK);
         } catch (Exception e) {
