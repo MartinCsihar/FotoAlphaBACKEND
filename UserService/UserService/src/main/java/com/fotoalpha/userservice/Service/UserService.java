@@ -175,4 +175,9 @@ public class UserService {
         user.setKey(event.key());
         userRepo.save(user);
     }
+
+    public boolean isUsernameTaken(String username) {
+        return userRepo.findByUserID(username).isPresent();
+    }
+
 }

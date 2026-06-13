@@ -74,4 +74,8 @@ public class AuthController {
     public boolean isLoggedIn(Authentication auth) {
         return auth != null;
     }
+    @GetMapping("/isUsernameTaken")
+    public boolean isUsernameTaken(@RequestParam("username") String username) {
+        return userService.isUsernameTaken(username);
+    }
 }
