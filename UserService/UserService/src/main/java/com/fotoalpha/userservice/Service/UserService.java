@@ -186,7 +186,7 @@ public class UserService {
                .username(user.getUserID())
                .email(user.getEmail())
                .phoneNumber(user.getPhoneNumber())
-               .fullName(user.getFirstName() + " " + user.getLastName())
+               .fullName(user.getLastName() + " " + user.getFirstName())
                .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
                .build();
        return newGU;
