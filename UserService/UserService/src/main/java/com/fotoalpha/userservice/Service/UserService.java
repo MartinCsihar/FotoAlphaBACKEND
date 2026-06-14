@@ -180,4 +180,15 @@ public class UserService {
         return userRepo.findByUserID(username).isPresent();
     }
 
+    public GetUser getUserData(String uid){
+        User user = userRepo.findByUserID(uid).orElseThrow(() ->  new UsernameNotFoundException("User not found with the given userid: " + uid));
+       GetUser newGU  =GetUser.builder()
+               .username(user.getUserID())
+               .email(user.getEmail())
+               .phoneNumber(user.getPhoneNumber())
+               .fullName(user.getFirstName() + " " + user.getLastName())
+               .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
+               .build();
+       return newGU;
+    }
 }

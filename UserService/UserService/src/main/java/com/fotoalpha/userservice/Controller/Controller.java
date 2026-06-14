@@ -1,6 +1,7 @@
 package com.fotoalpha.userservice.Controller;
 
 
+import com.fotoalpha.userservice.RequestsResponses.GetUser;
 import com.fotoalpha.userservice.RequestsResponses.UserModifyDataRequest;
 import com.fotoalpha.userservice.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,13 @@ public class Controller {
         String uid = auth.getName().split("\\:")[0];
         return new ResponseEntity<>(userService.modifyUserData(req, uid), HttpStatus.OK);
     }
-
+    @GetMapping("/getUserData")
+    public ResponseEntity<GetUser> getUserData(Authentication auth){
+        String uid = auth.getName().split("\\:")[0];
+        try{
+            return new ResponseEntity<>(userService.getUserData(uid), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
