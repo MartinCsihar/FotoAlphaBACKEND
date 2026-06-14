@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class UserModifyDataRequest {
+    String username;
     String email;
     String firstName;
     String lastName;

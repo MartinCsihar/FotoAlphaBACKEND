@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class Controller {
     private final UserService userService;
     @PatchMapping("/modifyPersonalData")
-    public ResponseEntity<?> modifyData(@RequestBody UserModifyDataRequest req, Authentication auth){
+    public ResponseEntity<?> modifyData(@RequestBody UserModifyDataRequest req, Authentication auth) throws Exception {
         String uid = auth.getName().split("\\:")[0];
-        return new ResponseEntity<>(userService.modifyUserData(req, uid), HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(userService.modifyUserData(req, uid), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
     @GetMapping("/getUserData")
     public ResponseEntity<GetUser> getUserData(Authentication auth){

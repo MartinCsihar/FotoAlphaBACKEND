@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,9 +87,22 @@ public class UserService {
     }
 
     @Transactional
-    public String modifyUserData(UserModifyDataRequest req, String uid) {
+    public String modifyUserData(UserModifyDataRequest req, String uid) throws Exception {
+
         User user = userRepo.findByUserID(uid)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found with the given userid: " + uid));
+        if(user.getLastModified() != null) {
+            if(LocalDateTime.now().isBefore(user.getLastModified().plusWeeks(1L))) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime lastModifiedPlusOneWeek = user.getLastModified().plusWeeks(1);
+                long daysBetween = ChronoUnit.DAYS.between(now, lastModifiedPlusOneWeek);
+                throw new Exception("Még " + daysBetween + " napig nem változtathatod meg az adataid!");
+            }
+        }
+
+        if (req.getUsername() != null) {
+            user.setUserID(req.getUsername());
+        }
         if (req.getFirstName() != null) {
             user.setFirstName(req.getFirstName());
         }
@@ -102,8 +116,10 @@ public class UserService {
             user.setEmail(req.getEmail());
 
         }
+        user.setLastModified(LocalDateTime.now());
         userRepo.save(user);
         return  "Sikeres adat modosítás!";
+
     }
 
     public Integer numberOfUsers() {
@@ -144,7 +160,7 @@ public class UserService {
                 .username(user.getUserID())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .fullName( user.getFirstName() + " " + user.getLastName() )
+                .fullName( user.getLastName() + " " + user.getFirstName() )
                 .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
                 .build();
         return user != null ? gu : "Nincs ilyen felhasználó!";

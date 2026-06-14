@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +26,7 @@ public class User {
     String phoneNumber;
     String role;
     String key;
+    LocalDateTime lastModified;
 
 
 
