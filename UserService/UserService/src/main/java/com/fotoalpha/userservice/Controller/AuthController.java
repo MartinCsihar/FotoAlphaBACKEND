@@ -78,4 +78,9 @@ public class AuthController {
     public boolean isUsernameTaken(@RequestParam("username") String username) {
         return userService.isUsernameTaken(username);
     }
+    @GetMapping("/auth")
+    public String getAuth(Authentication authentication) {
+        if (authentication == null) return "NULL";
+        return authentication.getAuthorities().iterator().next().getAuthority();
+    }
 }
