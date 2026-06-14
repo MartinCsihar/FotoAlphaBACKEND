@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.function.Function;
 
 @Service
@@ -50,6 +52,7 @@ public class JwtService {
                 .subject(user.getUserID()+":"+user.getEmail())
                 .claim("role", user.getRole())
                 .signWith(getSigningKey())
+                .expiration(new Date(new Date().getTime() + 86400000))
                 .compact();
 
     }
