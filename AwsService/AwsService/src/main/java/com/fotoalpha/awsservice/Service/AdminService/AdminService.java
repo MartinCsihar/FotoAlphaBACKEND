@@ -81,7 +81,7 @@ public class AdminService {
 
     public Object saveProfilePicture(String uid, UploadProfPicReq req) throws IOException {
         MultipartFile profilePicture = req.getProfilePicture();
-        String prefix = uid + "/PROFILEPIC/"+"profilepic_"+ UUID.randomUUID().toString().substring(4, 8);
+        String prefix = uid.replace("#", "") + "/PROFILEPIC/"+"profilepic_"+ UUID.randomUUID().toString().substring(4, 8);
         s3Client.putObject(PutObjectRequest.builder()
                         .key(prefix)
                         .contentType("image/jpeg")
