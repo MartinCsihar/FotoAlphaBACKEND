@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -26,8 +25,8 @@ public class JwtService {
         return parser.apply(claims);
 
     }
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject).split("\\:")[0];
+    public String extractUserID(String token) {
+        return extractClaim(token, Claims::getSubject).split(":")[0];
     }
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject).split("\\:")[1];
@@ -38,7 +37,7 @@ public class JwtService {
     }
     public boolean isTokenValid(String token){
         try {
-            extractUsername(token);
+            extractUserID(token);
             return true;
         } catch (Exception e){
             return false;

@@ -3,7 +3,6 @@ package com.fotoalpha.userservice.Security;
 import com.fotoalpha.userservice.Entity.User;
 import com.fotoalpha.userservice.Repo.UserRepo;
 import com.fotoalpha.userservice.Security.SecurityObjects.JwtAuthenticationFilter;
-import com.fotoalpha.userservice.Security.Service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -48,12 +47,12 @@ public class SecurityConfig {
         return args -> {
             if (userRepo.count() == 0) {
                 User user = User.builder()
-                        .userID("MARTIN_ADMINISTRATOR")
+                        .username("MARTIN_ADMINISTRATOR")
                         .password(passwordEncoder().encode("Csiharmartin25hu"))
                         .email("martincsihar@gmail.com")
-                        .phoneNumber("+36308602406")
-                        .firstName("Csihar")
-                        .lastName("Martin")
+                        .phoneNumber("+36 30 860 2406")
+                        .firstName("Martin Márk")
+                        .lastName("Csihar")
                         .role("ADMIN")
                         .build();
                 userRepo.save(user);

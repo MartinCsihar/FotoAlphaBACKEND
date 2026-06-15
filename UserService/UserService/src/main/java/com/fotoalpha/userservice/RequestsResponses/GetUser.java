@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class GetUser {
+    String userID;
     String username;
     String fullName;
     String email;

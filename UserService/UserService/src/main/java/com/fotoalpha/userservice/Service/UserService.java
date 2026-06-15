@@ -38,6 +38,7 @@ public class UserService {
         User user = userRepo.findByUserID(event.UserID())
                 .orElseThrow(()-> new UsernameNotFoundException("User not found with the given userid: " + event.UserID()));
         GetUserDataEventResponse res = GetUserDataEventResponse.builder()
+                .userId(user.getUserID())
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -90,7 +91,7 @@ public class UserService {
     public String modifyUserData(UserModifyDataRequest req, String uid) throws Exception {
 
         User user = userRepo.findByUserID(uid)
-                .orElseThrow(()-> new UsernameNotFoundException("User not found with the given userid: " + uid));
+                .orElseThrow(()-> new UsernameNotFoundException("User not found with the given user id: " + uid));
         if(user.getLastModified() != null) {
             if(LocalDateTime.now().isBefore(user.getLastModified().plusWeeks(1L))) {
                 LocalDateTime now = LocalDateTime.now();
@@ -101,7 +102,7 @@ public class UserService {
         }
 
         if (req.getUsername() != null) {
-            user.setUserID(req.getUsername());
+            user.setUsername(req.getUsername());
         }
         if (req.getFirstName() != null) {
             user.setFirstName(req.getFirstName());
@@ -140,7 +141,8 @@ public class UserService {
     public Object getAllUsers() {
         List<GetUser> gu = userRepo.getUsers().stream().map(user -> {
             return GetUser.builder()
-                    .username(user.getUserID())
+                    .userID(user.getUserID())
+                    .username(user.getUsername())
                     .email(user.getEmail())
                     .phoneNumber(user.getPhoneNumber())
                     .fullName(user.getLastName() + " " + user.getFirstName())
@@ -156,14 +158,14 @@ public class UserService {
     public Object getUser(String uid) {
         User user = userRepo.findByUserID(uid)
                 .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given userid: " + uid));
-        GetUser gu = GetUser.builder()
-                .username(user.getUserID())
+        return GetUser.builder()
+                .userID(user.getUserID())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .fullName( user.getLastName() + " " + user.getFirstName() )
                 .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
                 .build();
-        return user != null ? gu : "Nincs ilyen felhasználó!";
     }
 
 
@@ -193,13 +195,14 @@ public class UserService {
     }
 
     public boolean isUsernameTaken(String username) {
-        return userRepo.findByUserID(username).isPresent();
+        return userRepo.findByUsername(username).isPresent();
     }
 
     public GetUser getUserData(String uid){
         User user = userRepo.findByUserID(uid).orElseThrow(() ->  new UsernameNotFoundException("User not found with the given userid: " + uid));
-       GetUser newGU  =GetUser.builder()
-               .username(user.getUserID())
+       GetUser newGU  = GetUser.builder()
+               .userID(user.getUserID())
+               .username(user.getUsername())
                .email(user.getEmail())
                .phoneNumber(user.getPhoneNumber())
                .fullName(user.getLastName() + " " + user.getFirstName())

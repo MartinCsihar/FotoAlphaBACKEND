@@ -17,7 +17,7 @@ public class Controller {
     private final UserService userService;
     @PatchMapping("/modifyPersonalData")
     public ResponseEntity<?> modifyData(@RequestBody UserModifyDataRequest req, Authentication auth) throws Exception {
-        String uid = auth.getName().split("\\:")[0];
+        String uid = auth.getName().split(":")[0];
         try{
             return new ResponseEntity<>(userService.modifyUserData(req, uid), HttpStatus.OK);
         }catch(Exception e){

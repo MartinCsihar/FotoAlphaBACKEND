@@ -31,8 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = extractJwtFromCookie(request);
         if (token != null && jwtService.isTokenValid(token)) {
-            String username = jwtService.extractUsername(token);
-            UserDetails ud = customUserDetailsService.loadUserByUsername(username);
+            String userID = jwtService.extractUserID(token);
+            UserDetails ud = customUserDetailsService.loadUserByUsername(userID);
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(ud.getAuthorities().iterator().next().toString().replace("ROLE_", ""));
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(

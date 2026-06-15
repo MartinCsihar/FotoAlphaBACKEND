@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Random;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     String userID;
+    String username;
     Integer numberOfPhotos;
     Integer numberOfVideos;
     String email;
@@ -28,6 +32,16 @@ public class User {
     String key;
     LocalDateTime lastModified;
 
+    @PrePersist
+    public void prePersist() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb_appId = new StringBuilder(chars.length());
+        Random rnd = new Random();
+        for (int i = 0; i < 10; i++) {
+            sb_appId.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
+        userID = "#" + sb_appId.toString();
+    }
 
 
 }

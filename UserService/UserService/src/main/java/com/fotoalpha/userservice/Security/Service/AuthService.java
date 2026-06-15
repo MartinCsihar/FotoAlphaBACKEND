@@ -16,7 +16,7 @@ public class AuthService {
     public String login(String data, String rawPassword, boolean withUsername) {
         User user = null;
         if (withUsername) {
-            user = userRepo.findByUserID(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+            user = userRepo.findByUsername(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
             if (passwordEncoder.matches(rawPassword,  user.getPassword()))  return jwtService.generateToken(user);
             else return "";
         }

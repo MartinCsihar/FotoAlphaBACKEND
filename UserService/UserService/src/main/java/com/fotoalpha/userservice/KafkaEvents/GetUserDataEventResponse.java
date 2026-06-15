@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record GetUserDataEventResponse(
         String correlationId,
+        String userId,
         String firstName,
         String lastName,
         String email,
