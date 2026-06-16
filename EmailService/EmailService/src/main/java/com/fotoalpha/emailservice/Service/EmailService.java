@@ -80,7 +80,7 @@ public class EmailService {
                         <p>A foglalásod sikeresen elmentettem! Hamarosan találkozunk! :)</p>
                         <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
                         <table style="width:100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
-                                <tr style="background-color: #f8f9fa;">
+                                <tr >
                                   <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító</td>
                                   <td style="padding: 12px; border: 1px solid #eee;">%s</td>
                                 </tr>
@@ -97,7 +97,7 @@ public class EmailService {
                                   <td style="padding: 12px; border: 1px solid #eee;">%s</td>
                                 </tr>
                                 <tr>
-                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Ár:</td>
+                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Fizetendő:</td>
                                   <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s Ft</td>
                                 </tr>
                          </table>
@@ -126,8 +126,6 @@ public class EmailService {
                       </div>
                  </body>
                  </html>
-
-
                 """.formatted(
                 event.lastName(), event.firstName(),
                 event.appointmentId(),
@@ -172,7 +170,7 @@ public class EmailService {
                         <p><strong>%s %s</strong> imént adott le egy új foglalást!</p>
                         <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #2c3e50;">Foglalási adatok</h3>
                         <table style="width:100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
-                                <tr style="background-color: #f8f9fa;">
+                                <tr>
                                   <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; width: 40%%;">Foglalás azonosító</td>
                                   <td style="padding: 12px; border: 1px solid #eee;">%s</td>
                                 </tr>
@@ -189,7 +187,7 @@ public class EmailService {
                                   <td style="padding: 12px; border: 1px solid #eee;">%s</td>
                                 </tr>
                                 <tr>
-                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Ár:</td>
+                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Fizetendő:</td>
                                   <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s Ft</td>
                                 </tr>
                          </table>
