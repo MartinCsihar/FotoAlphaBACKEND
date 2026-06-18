@@ -47,20 +47,11 @@ public class AuthController {
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
         cookie.setPath("/");
+        cookie.setMaxAge(60*60*24);
         response.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("jwt",  null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-        return "Sikeres kijelentkezés!";
-    }
     @PostMapping("/passwordResetEmail")
     public ResponseEntity<?> sendMailForPwReset(@RequestBody SendMailRequest req) {
         return new ResponseEntity<>(userService.sendPwResetMailEvent(req), HttpStatus.OK);

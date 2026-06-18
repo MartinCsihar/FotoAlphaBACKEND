@@ -22,6 +22,13 @@ public interface UserRepo extends JpaRepository<User, String> {
     @Query(value = "select sum(number_of_photos) from users", nativeQuery = true)
     Integer countPhotos();
 
+    @Query(value = "select number_of_photos from users where userid = ?1", nativeQuery = true)
+    Integer countUserPhotos(String uid);
+
+    @Query(value = "select number_of_videos from users where userid = ?1", nativeQuery = true)
+    Integer countUserVideos(String uid);
+
+
     @Query(value = "select * from users where userid <> '#A4PKQXABHX'", nativeQuery = true)
     List<User> getUsers();
 

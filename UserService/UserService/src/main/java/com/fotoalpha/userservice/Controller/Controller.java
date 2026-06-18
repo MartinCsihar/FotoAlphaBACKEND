@@ -4,11 +4,16 @@ package com.fotoalpha.userservice.Controller;
 import com.fotoalpha.userservice.RequestsResponses.GetUser;
 import com.fotoalpha.userservice.RequestsResponses.UserModifyDataRequest;
 import com.fotoalpha.userservice.Service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -32,5 +37,21 @@ public class Controller {
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt", "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "Sikeres kijelentkezés!";
+    }
+
+    @GetMapping("/numberOfPhotosAndVideos")
+    public ResponseEntity<Map<String, Integer>> getNumberOfPhotos(Authentication auth){
+        String uid = auth.getName().split(":")[0];
+        return new ResponseEntity<>(userService.getNumberOfPhotosMadeForUser(uid), HttpStatus.OK);
     }
 }

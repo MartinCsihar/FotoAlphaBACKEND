@@ -210,4 +210,8 @@ public class UserService {
                .build();
        return newGU;
     }
+
+    public Map<String, Integer> getNumberOfPhotosMadeForUser(String uid) {
+         return Map.of("photos", userRepo.countUserPhotos(uid), "videos", userRepo.countUserVideos(uid));
+    }
 }
