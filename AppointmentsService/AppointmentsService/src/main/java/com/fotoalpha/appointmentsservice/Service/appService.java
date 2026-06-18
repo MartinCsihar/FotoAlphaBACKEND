@@ -3,7 +3,6 @@ package com.fotoalpha.appointmentsservice.Service;
 import com.fotoalpha.appointmentsservice.Entity.*;
 import com.fotoalpha.appointmentsservice.Enums.AppointmentType;
 import com.fotoalpha.appointmentsservice.Enums.Status;
-import com.fotoalpha.appointmentsservice.Kafka.Consumer;
 import com.fotoalpha.appointmentsservice.Kafka.Producer;
 import com.fotoalpha.appointmentsservice.KafkaEvents.*;
 import com.fotoalpha.appointmentsservice.Repo.AppRepo;
@@ -14,8 +13,6 @@ import com.fotoalpha.appointmentsservice.ResponseRequest.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Fetch;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -344,5 +341,9 @@ public class appService {
         }
         AppInfoResEvent appInfoResEvent = new AppInfoResEvent(appInfoReqEvent.correlationId(), appointmentResponses);
         producer.sendAppInfoResEvent(appInfoResEvent);
+    }
+
+    public Integer getTheNumberOfAppointmentsOfUser(String uid) {
+        return appRepo.countAppointmentsOfUser(uid);
     }
 }

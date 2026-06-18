@@ -66,4 +66,11 @@ public class Controller {
         }
     }
 
+    @GetMapping("/numberOfAppointments")
+    public ResponseEntity<Integer> getNumberOfAppointments(Authentication authentication) {
+        String uid = authentication.getName().split(":")[0];
+        return new ResponseEntity<>(appService.getTheNumberOfAppointmentsOfUser(uid), HttpStatus.OK);
+    }
+
+
 }

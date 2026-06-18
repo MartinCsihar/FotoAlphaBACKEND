@@ -1,11 +1,9 @@
 package com.fotoalpha.appointmentsservice.Repo;
 
 import com.fotoalpha.appointmentsservice.Entity.Appointments;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,4 +42,7 @@ public interface AppRepo extends JpaRepository<Appointments, String> {
 
     @Query(value = "select count(*) from (select distinct user_id from appointments);",nativeQuery = true)
     Integer countClients();
+
+    @Query(value = "select count(*) from appointments where user_id = ?1 ",nativeQuery = true)
+    Integer countAppointmentsOfUser(String uid);
 }
