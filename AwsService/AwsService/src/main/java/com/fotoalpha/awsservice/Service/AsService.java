@@ -34,23 +34,23 @@ public class AsService {
     private String region;
 
 
-    public List<String> getAllPhotos(String username) {
-        String prefixPhotos = username+"/PHOTOS/";
+    public List<String> getAllPhotos(String uid) {
+        String prefixPhotos = uid.replace("#", "")+"/PHOTOS/";
         return getNormalUrls(prefixPhotos);
     }
 
-    public List<String> getAllVideos(String username) {
-        String prefixVideos = username+"/VIDEOS/";
+    public List<String> getAllVideos(String uid) {
+        String prefixVideos = uid.replace("#", "")+"/VIDEOS/";
         return getNormalUrls(prefixVideos);
     }
 
-    public void downloadPhotosZip(String username, HttpServletResponse response) throws IOException {
-        String prefixPhotos = username+"/PHOTOS/";
+    public void downloadPhotosZip(String uid, HttpServletResponse response) throws IOException {
+        String prefixPhotos = uid.replace("#", "")+"/PHOTOS/";
         downloadZip(prefixPhotos, response);
     }
 
-    public void downloadVideosZip(String username, HttpServletResponse response) throws IOException {
-        String prefixVideos = username+"/VIDEOS/";
+    public void downloadVideosZip(String uid, HttpServletResponse response) throws IOException {
+        String prefixVideos = uid.replace("#", "")+"/VIDEOS/";
         downloadZip(prefixVideos, response);
     }
 
