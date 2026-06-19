@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,10 +20,10 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping(value = "/uploadPhotos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<UploadFilesRes> uploadPhotos(@ModelAttribute UploadFilesReq uploadFilesReq,
+    public ResponseEntity<UploadFilesRes> uploadPhotos(@RequestParam("files") List<MultipartFile> files,
                                                       @RequestParam("uid") String uid, @RequestParam("photoType") String photoType) {
         try{
-            adminService.uploadPhotos(uploadFilesReq, uid, photoType);
+            adminService.uploadPhotos(files, uid, photoType);
             return new ResponseEntity<>(new UploadFilesRes("Sikeres feltöltés!"),  HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(new UploadFilesRes("Nem sikerült feltölteni a fileokat! Hiba: "+e),HttpStatus.BAD_REQUEST);

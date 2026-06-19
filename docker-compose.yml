@@ -146,8 +146,8 @@ services:
             - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
             - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-            - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=50MB
-            - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=50MB
+            - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=50000MB
+            - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=50000MB
         healthcheck:
             test: ["CMD", "curl", "-f" ,"http://localhost:8083/health"]
             interval: 10s
