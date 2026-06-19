@@ -40,7 +40,7 @@ public class AdminService {
         List<String> urlsForSavePhotosEvent = new ArrayList<>();
 
         for (MultipartFile file : uploadFilesReq.getFiles()) {
-            String prefix = uid + "/PHOTOS/" + "photo_" + UUID.randomUUID().toString().substring(4, 8) ;
+            String prefix = uid.replace("#", "") + "/PHOTOS/" + "photo_" + UUID.randomUUID().toString().substring(4, 8) ;
             s3Client.putObject(PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(prefix)
@@ -66,14 +66,14 @@ public class AdminService {
     }
 
     public GetPhotosResponse getPhotosByUID(String uid) {
-        String prefix = uid + "/PHOTOS/";
+        String prefix = uid.replace("#", "") + "/PHOTOS/";
         return  GetPhotosResponse.builder()
                 .photoUrls(asService.getPresigendURLs(prefix))
                 .build();
     }
 
     public GetVideosResponse getVideosByUID(String uid) {
-        String prefix = uid + "/VIDEOS/";
+        String prefix = uid.replace("#", "") + "/VIDEOS/";
         return  GetVideosResponse.builder()
                 .videoUrls(asService.getPresigendURLs(prefix))
                 .build();
