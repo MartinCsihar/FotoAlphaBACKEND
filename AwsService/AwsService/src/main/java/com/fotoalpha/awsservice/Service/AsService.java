@@ -63,7 +63,7 @@ public class AsService {
                     .bucket(bucketName)
                     .key(key)
                     .build());
-            ZipEntry entry = new ZipEntry(prefix + ++i);
+            ZipEntry entry = new ZipEntry(prefix +"_" + ++i + ".jpg");
             zos.putNextEntry(entry);
             zos.write(reqBytes.asByteArray());
             zos.closeEntry();
