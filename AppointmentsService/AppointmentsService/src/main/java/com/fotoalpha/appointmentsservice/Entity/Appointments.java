@@ -44,7 +44,7 @@ public class Appointments {
 
     @ManyToOne
     @JoinColumn(name = "personal_bundle_id")
-    private PersonalBundles presonalBundle;
+    private PersonalBundles personalBundle;
 
     @PrePersist
     public void prePersist() {

@@ -178,7 +178,7 @@ public class appService {
                 .appointmentTime(req.getAppointmentTime())
                 .type(AppointmentType.PERSONAL)
                 .status(Status.pending)
-                .presonalBundle(pb)
+                .personalBundle(pb)
                 .userId(uid)
                 .build();
         personalBundlesRepo.save(pb);
@@ -293,9 +293,9 @@ public class appService {
     public Boolean deleteAppointment(String appid) {
         Appointments foundApp  = appRepo.findById(appid).orElse(null);
         if (foundApp != null) {
-            if (foundApp.getPresonalBundle() != null) {
+            if (foundApp.getPersonalBundle() != null) {
                 appRepo.deleteById(appid);
-                personalBundlesRepo.delete(foundApp.getPresonalBundle());
+                personalBundlesRepo.delete(foundApp.getPersonalBundle());
                 return true;
             }
             else{
