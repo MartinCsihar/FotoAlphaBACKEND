@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -18,8 +19,10 @@ public class Producer {
     private final KafkaTemplate<String, GetUserDataEvent> kafkaGetUserDataTemplate;
     private final KafkaTemplate<String, FetchUsersEvent> kafkaFetchUsersTemplate;
     private final KafkaTemplate<String, AppInfoResEvent> kafkaAppInfoResTemplate;
+    private final KafkaTemplate<String, GetAddressesReqEvent> kafkaGetAddressesReqTemplate;
     private final GetUserDataFutureManager gudeManager;
     private final FetchUsersEventManager fueManager;
+    private final GetAddressInfoFutureManager gaiManager;
 
     public void sendSaveAddressEvent(SaveAddressEvent saveAddress) {
         kafkaAddressTemplate.send("save-address", saveAddress);
@@ -45,5 +48,12 @@ public class Producer {
 
     public void sendAppInfoResEvent(AppInfoResEvent appInfoResEvent) {
         kafkaAppInfoResTemplate.send("app-info-req.comp", appInfoResEvent);
+    }
+
+    public GetAddressesResEvent sendGetAddressResEvent(GetAddressesReqEvent req) throws ExecutionException, InterruptedException, TimeoutException {
+        CompletableFuture<GetAddressesResEvent> future = gaiManager.createRequest(req.correlationId());
+
+        kafkaGetAddressesReqTemplate.send("address-info-req", req);
+        return future.get(5, TimeUnit.SECONDS);
     }
 }

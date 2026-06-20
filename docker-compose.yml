@@ -227,7 +227,7 @@ services:
 
     appointments-service:
         build: ./AppointmentsService/AppointmentsService
-        container_name: appointments_service
+        container_name: appointments-service
         ports:
             - "8086:8086"
         depends_on:
@@ -240,7 +240,7 @@ services:
         env_file:
             - .env
         environment:
-            - SPRING_APPLICATION_NAME=appointments_service
+            - SPRING_APPLICATION_NAME=appointments-service
             - SERVER_PORT=8086
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_SERVER_DEFAULTZONE}
             - JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}

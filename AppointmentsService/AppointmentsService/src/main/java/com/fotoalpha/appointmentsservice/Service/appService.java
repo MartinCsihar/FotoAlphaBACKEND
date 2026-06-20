@@ -21,6 +21,7 @@ import java.util.*;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -305,8 +306,36 @@ public class appService {
         }
         return false;
     }
-    public List<Appointments> getAllAppointmentsByUserId(String uid) {
-        return appRepo.findAllByUserId(uid);
+    public List<GetAllAppointment> getAllAppointmentsByUserId(String uid) throws ExecutionException, InterruptedException, TimeoutException {
+        List<Appointments> apps  =  appRepo.findAllByUserId(uid);
+
+        GetAddressesReqEvent req = GetAddressesReqEvent.builder()
+                .addressIds(apps.stream().map(Appointments::getAddressId).toList())
+                .correlationId(UUID.randomUUID().toString())
+                .build();
+
+        List<String> locations = producer.sendGetAddressResEvent(req).addresses();
+
+        AtomicInteger i = new AtomicInteger(0);
+
+        List<GetAllAppointment> dto = apps.stream().map((app) -> {
+                    String appid = app.getId();
+                    PersonalBundles personalApp = app.getPersonalBundle();
+                    GetAllAppointment gaa = GetAllAppointment.builder()
+                            .id(appid == null ? personalApp.getId() : appid )
+                            .bundleName(personalApp == null ? String.valueOf(app.getBundle().getBundleSubType()):null)
+                            .bundleType(personalApp == null ? String.valueOf(app.getBundle().getBundleType()):null)
+                            .price(personalApp == null ? app.getBundle().getBundlePrice() : personalApp.getBundlePrice())
+                            .orderDate(app.getOrderDate())
+                            .eventDate(app.getAppointmentDate())
+                            .eventTime(app.getAppointmentTime())
+                            .location(locations.get(i.get()))
+                            .status(String.valueOf(app.getStatus()))
+                            .build();
+                    i.getAndIncrement();
+                    return gaa;
+        }).toList();
+        return dto;
     }
 
     public Appointments getAllAppointmentsOfUserByAppId(String appid, String uid) {

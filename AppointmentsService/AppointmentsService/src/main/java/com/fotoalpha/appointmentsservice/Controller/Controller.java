@@ -20,9 +20,13 @@ public class Controller {
     private final appService appService;
 
     @GetMapping("/allAppointments")
-    public ResponseEntity<List<Appointments>> getAllAppointments(Authentication authentication) {
+    public ResponseEntity<?> getAllAppointments(Authentication authentication) throws ExecutionException, InterruptedException, TimeoutException {
         String uid = authentication.getName().split("\\:")[0];
+        try {
         return new ResponseEntity<>(appService.getAllAppointmentsByUserId(uid), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("Hiba történt: " + e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/appointment")

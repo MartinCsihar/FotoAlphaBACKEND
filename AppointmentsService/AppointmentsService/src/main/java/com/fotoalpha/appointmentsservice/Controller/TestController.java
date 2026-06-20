@@ -103,8 +103,12 @@ public class TestController {
         return new ResponseEntity<>(appService.deleteAppointment(appid), HttpStatus.OK);
     }
     @GetMapping("/allAppointmentsOfUser")
-    public ResponseEntity<List<Appointments>> getAllAppointmentsOfUser(@RequestParam("uid") String uid) {
-        return new ResponseEntity<>(appService.getAllAppointmentsByUserId(uid), HttpStatus.OK);
+    public ResponseEntity<?> getAllAppointmentsOfUser(@RequestParam("uid") String uid) throws ExecutionException, InterruptedException, TimeoutException {
+        try{
+            return new ResponseEntity<>(appService.getAllAppointmentsByUserId(uid), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("Hiba történt: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @GetMapping("/allAppointmentsOfUserByAppId")
     public ResponseEntity<Appointments> getAllAppointmentsOfUserByAppId(@RequestParam("uid") String uid, @RequestParam("appid") String appid) {

@@ -2,6 +2,7 @@ package com.fotoalpha.appointmentsservice.Kafka;
 
 import com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoReqEvent;
 import com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent;
+import com.fotoalpha.appointmentsservice.KafkaEvents.GetAddressesResEvent;
 import com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEventResponse;
 import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ public class Consumer {
     private final GetUserDataFutureManager gudeManager;
     private final FetchUsersEventManager fueManager;
     private final appService appService;
+    private final GetAddressInfoFutureManager gaiManager;
     @KafkaListener(topics = "get-user-data.comp", groupId = "appointments-service")
     public void getUserDataEvent(GetUserDataEventResponse getUserDataEventResponse) {
         gudeManager.complete(getUserDataEventResponse.correlationId(), getUserDataEventResponse);
@@ -27,5 +29,10 @@ public class Consumer {
     @KafkaListener(topics = "app-info-req", groupId = "appointments-service")
     public void appInfoReqEvent(AppInfoReqEvent appInfoReqEvent) {
         appService.getRequestedAppointments(appInfoReqEvent);
+    }
+
+    @KafkaListener(topics = "address-info-req.comp", groupId = "appointments-service")
+    public void addressEvent(GetAddressesResEvent resEvent) {
+        gaiManager.complete(resEvent.correlationId(),resEvent);
     }
 }
