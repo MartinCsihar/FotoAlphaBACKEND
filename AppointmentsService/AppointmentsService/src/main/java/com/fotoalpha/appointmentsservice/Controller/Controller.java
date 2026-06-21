@@ -36,9 +36,9 @@ public class Controller {
     }
 
     @PutMapping("/cancelAppointment")
-    public ResponseEntity<Boolean> cancelAppointment(@RequestParam("appid") String appointmentId, Authentication authentication) {
+    public ResponseEntity<Boolean> cancelAppointment(@RequestParam("appid") String appointmentId,@RequestParam("cancel") boolean cancel, Authentication authentication) {
         String uid = authentication.getName().split("\\:")[0];
-        return new ResponseEntity<>(appService.cancelAppointment(uid, appointmentId), HttpStatus.OK);
+        return new ResponseEntity<>(appService.cancelAppointment(uid, appointmentId, cancel), HttpStatus.OK);
     }
 
     @PostMapping("/savePairAppointment")
