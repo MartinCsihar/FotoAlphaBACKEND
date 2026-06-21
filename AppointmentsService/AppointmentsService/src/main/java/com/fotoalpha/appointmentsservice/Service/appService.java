@@ -42,15 +42,18 @@ public class appService {
     }
 
     @Transactional
-    public Boolean cancelAppointment(String uid, String appointmentId, boolean cancel) {
-        Appointments app = appRepo.findByIdAndUserId(appointmentId, uid);
-        LocalDate now = LocalDate.now();
-        LocalDate appointmentDate = app.getAppointmentDate();
-        if (now.plusWeeks(2).isAfter(appointmentDate)) {
-            return false;
+    public Boolean cancelAppointment(String uid, String appointmentId, boolean cancel, boolean skip) {
+        if (!skip) {
+            Appointments app = appRepo.findByIdAndUserId(appointmentId, uid);
+            LocalDate now = LocalDate.now();
+            LocalDate appointmentDate = app.getAppointmentDate();
+            if (now.plusWeeks(2).isAfter(appointmentDate)) {
+                return false;
+            }
         }
         if(cancel){
              appRepo.cancelAppointment(appointmentId, uid);
+            return true;
         }
         return true;
 

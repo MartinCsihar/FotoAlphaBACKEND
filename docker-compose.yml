@@ -210,15 +210,20 @@ services:
             - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
             - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
             - SPRING_DATASOURCE_URL=${ADDSERVICE_JDBC_URL}
-            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver         
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
+            - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
+            - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=addressInfoRes:com.fotoalpha.addressservice.Events.GetAddressesResEvent
+            - SPRING_KAFKA_CONSUMER_GROUP_ID=address-service-2
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
             - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
             - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
-            - SPRING_KAFKA_CONSUMER_GROUP_ID=address-service
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
-            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest      
-            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent,deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent
+            - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.addressservice.Events.SaveAddressEvent,deleteAddress:com.fotoalpha.addressservice.Events.DeleteAddressEvent,addReq:com.fotoalpha.addressservice.Events.GetAddressesReqEvent
+
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8085/health"]
             interval: 10s
@@ -240,6 +245,10 @@ services:
         env_file:
             - .env
         environment:
+            - STRIPE_SCK_KEY_TEST=${STRIPE_SCK_TEST}
+            - STRIPE_WEBHOOK_SECRET=${STRIPE_WHSC}
+            - FRONTEND_SUCCESS_URL=http://localhost:3000/cancel-success
+            - FRONTEND_CANCEL_URL=http://localhost:3000/cancel-failed
             - SPRING_APPLICATION_NAME=appointments-service
             - SERVER_PORT=8086
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_SERVER_DEFAULTZONE}
@@ -259,8 +268,8 @@ services:
             - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
             - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer 
             - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true 
-            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userDataResponse:com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEventResponse,fetchUsers:com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent,appInfoReq:com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoReqEvent  
-            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.appointmentsservice.KafkaEvents.SaveAddressEvent,deleteAddress:com.fotoalpha.appointmentsservice.KafkaEvents.DeleteAddressEvent,appCreated:com.fotoalpha.appointmentsservice.KafkaEvents.AppointmentCreatedEvent,userData:com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEvent,fetchUsers:com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent,appInfoRes:com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoResEvent           
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userDataResponse:com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEventResponse,fetchUsers:com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent,appInfoReq:com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoReqEvent,addressInfoRes:com.fotoalpha.appointmentsservice.KafkaEvents.GetAddressesResEvent
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=saveAddress:com.fotoalpha.appointmentsservice.KafkaEvents.SaveAddressEvent,deleteAddress:com.fotoalpha.appointmentsservice.KafkaEvents.DeleteAddressEvent,appCreated:com.fotoalpha.appointmentsservice.KafkaEvents.AppointmentCreatedEvent,userData:com.fotoalpha.appointmentsservice.KafkaEvents.GetUserDataEvent,fetchUsers:com.fotoalpha.appointmentsservice.KafkaEvents.FetchUsersEvent,appInfoRes:com.fotoalpha.appointmentsservice.KafkaEvents.AppInfoResEvent,addReq:com.fotoalpha.appointmentsservice.KafkaEvents.GetAddressesReqEvent      
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
             interval: 10s
@@ -268,7 +277,7 @@ services:
             retries: 10
     userratings-service:
         build: ./UserRatingsService/UserRatingsService
-        container_name: userratings_service
+        container_name: user-ratings-service
         ports:
             - "8087:8087"
         env_file:
@@ -281,7 +290,7 @@ services:
             eureka-server:
                 condition: service_healthy         
         environment:
-            - SPRING_APPLICATION_NAME=userratings_service
+            - SPRING_APPLICATION_NAME=user-ratings-service
             - SERVER_PORT=8087
             - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=${EUREKA_SERVER_DEFAULTZONE}
             - JWT_SECRET_KEY=${JWT_SECRET_KEY_GEN}

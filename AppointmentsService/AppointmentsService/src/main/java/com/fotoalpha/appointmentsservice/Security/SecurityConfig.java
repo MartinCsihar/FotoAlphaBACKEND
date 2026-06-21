@@ -33,10 +33,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers("/stripe-api/**").permitAll()
                         .requestMatchers("/health").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/admin-api/**").hasAuthority("ADMIN")
-                        .requestMatchers("/test/**").hasAuthority("ADMIN")
+
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
