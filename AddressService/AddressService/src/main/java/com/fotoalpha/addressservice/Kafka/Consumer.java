@@ -18,18 +18,18 @@ import java.util.List;
 public class Consumer {
     private final aService service;
 
-    @KafkaListener(topics = "save-address", groupId = "address-service")
+    @KafkaListener(topics = "save-address", groupId = "address-service-2")
     public void saveAddress(SaveAddressEvent event) {
         log.info("Received SaveAddressEvent {}", event);
         service.saveAddress(event);
     }
 
-    @KafkaListener(topics = "delete-address", groupId = "address-service")
+    @KafkaListener(topics = "delete-address", groupId = "address-service-2")
     public void deleteAddress(DeleteAddressEvent event) {
         service.deleteAddress(event);
     }
 
-    @KafkaListener(topics = "address-info-req", groupId = "address-service")
+    @KafkaListener(topics = "address-info-req", groupId = "address-service-2")
     public void getAddress(GetAddressesReqEvent req){
         log.info("Received GetAddressesReqEvent {}", req);
         service.getLocations(req);
