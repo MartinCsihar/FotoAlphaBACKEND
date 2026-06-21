@@ -333,6 +333,7 @@ public class appService {
                             .eventTime(app.getAppointmentTime())
                             .location(locations.get(i.get()))
                             .status(String.valueOf(app.getStatus()))
+                            .isRated(app.getIsRated())
                             .build();
                     i.getAndIncrement();
                     return gaa;
@@ -376,5 +377,12 @@ public class appService {
 
     public Integer getTheNumberOfAppointmentsOfUser(String uid) {
         return appRepo.countAppointmentsOfUser(uid);
+    }
+
+    @Transactional
+    public void setRatingOfAppointment(String appid, String uid) {
+        Appointments app = appRepo.findByIdAndUserId(appid, uid);
+        app.setIsRated(Boolean.TRUE);
+        appRepo.save(app);
     }
 }

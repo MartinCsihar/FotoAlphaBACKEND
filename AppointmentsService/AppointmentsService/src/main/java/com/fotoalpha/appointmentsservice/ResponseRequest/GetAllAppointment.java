@@ -18,5 +18,6 @@ public class GetAllAppointment {
     Integer price;
     String location;
     String status;
+    Boolean isRated;
 
 }

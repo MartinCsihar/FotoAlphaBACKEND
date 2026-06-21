@@ -31,6 +31,7 @@ public class Appointments {
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
     private String userId;
+    private Boolean isRated;
 
     @Enumerated(EnumType.STRING)
     private AppointmentType type;

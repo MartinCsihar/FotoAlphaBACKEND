@@ -4,7 +4,7 @@ package com.fotoalpha.appointmentsservice.Controller;
 import com.fotoalpha.appointmentsservice.Entity.Appointments;
 import com.fotoalpha.appointmentsservice.Entity.User;
 import com.fotoalpha.appointmentsservice.ResponseRequest.AdminModifyDetailsRequest;
-import com.fotoalpha.appointmentsservice.ResponseRequest.GetAllAppointment;
+
 import com.fotoalpha.appointmentsservice.Service.appService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

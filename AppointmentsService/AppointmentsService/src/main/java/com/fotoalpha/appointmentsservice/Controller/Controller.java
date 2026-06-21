@@ -76,5 +76,11 @@ public class Controller {
         return new ResponseEntity<>(appService.getTheNumberOfAppointmentsOfUser(uid), HttpStatus.OK);
     }
 
+    @PutMapping("/setRatingOfAppointment")
+    public void setRated(@RequestParam("appid") String appid, Authentication auth){
+        String uid = auth.getName().split(":")[0];
+        appService.setRatingOfAppointment(appid, uid);
+    }
+
 
 }
