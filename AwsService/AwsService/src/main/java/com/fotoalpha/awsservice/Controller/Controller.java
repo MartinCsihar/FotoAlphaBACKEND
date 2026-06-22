@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -27,31 +28,38 @@ public class Controller {
     }
 
     @GetMapping("/getAllPhotos")
-    public ResponseEntity<GetPhotosResponse> getAllPhotos() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       String uid = authentication.getName().split("\\:")[0];
-        return new ResponseEntity<>(new GetPhotosResponse(asService.getAllPhotos(uid)), HttpStatus.OK);
+    public ResponseEntity<GetPhotosResponse> getAllPhotos(Authentication authentication
+                                                         ) {
+       String uid = authentication.getName().split(":")[0];
+        return new ResponseEntity<>(asService.getAllPhotos(uid), HttpStatus.OK);
+    }
+    @GetMapping("/getFolderNames")
+    public ResponseEntity<?> getFolders(Authentication authentication,
+                                        @RequestParam("videoFolders") Boolean videoFolders){
+        String uid = authentication.getName().split(":")[0];
+        return new ResponseEntity<>(asService.getFolders(uid, videoFolders), HttpStatus.OK);
     }
 
     @GetMapping("/getAllVideos")
-    public ResponseEntity<GetVideosResponse> getAllVideos() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       String uid = authentication.getName().split("\\:")[0];
-        return new ResponseEntity<>(new GetVideosResponse(asService.getAllVideos(uid)), HttpStatus.OK);
+    public ResponseEntity<GetVideosResponse> getAllVideos(Authentication authentication
+                                                         ) {
+       String uid = authentication.getName().split(":")[0];
+        return new ResponseEntity<>(asService.getAllVideos(uid), HttpStatus.OK);
     }
 
     @GetMapping("/downloadAllPhotos")
-    public void downloadPhotos(HttpServletResponse response) throws IOException {
+    public void downloadPhotos(HttpServletResponse response,
+                               @RequestParam("folderName") String folderName) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       String uid = authentication.getName().split("\\:")[0];
-        asService.downloadPhotosZip(uid, response);
+       String uid = authentication.getName().split(":")[0];
+        asService.downloadPhotosZip(uid, folderName,response );
     }
 
     @GetMapping("/downloadAllVideos")
-    public void downloadVideos(HttpServletResponse response) throws IOException {
+    public void downloadVideos(HttpServletResponse response, @RequestParam("folderName") String folderName) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-       String uid = authentication.getName().split("\\:")[0];
-        asService.downloadVideosZip(uid, response);
+       String uid = authentication.getName().split(":")[0];
+        asService.downloadVideosZip(uid,folderName ,response);
     }
 
 }

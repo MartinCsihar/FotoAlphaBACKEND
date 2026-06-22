@@ -5,10 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class GetVideosResponse {
-    List<String> videoUrls;
+    Map<String, Object> videoUrls;
 }

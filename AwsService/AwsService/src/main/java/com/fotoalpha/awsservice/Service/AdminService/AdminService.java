@@ -5,11 +5,12 @@ import com.fotoalpha.awsservice.Events.SaveProfilePictureEvent;
 import com.fotoalpha.awsservice.Kafka.Producer;
 import com.fotoalpha.awsservice.RequestResponse.GetPhotosResponse;
 import com.fotoalpha.awsservice.RequestResponse.GetVideosResponse;
-import com.fotoalpha.awsservice.RequestResponse.UploadFilesReq;
 import com.fotoalpha.awsservice.RequestResponse.UploadProfPicReq;
 import com.fotoalpha.awsservice.Service.AsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -20,8 +21,10 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequ
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -36,11 +39,10 @@ public class AdminService {
     @Value("${aws.region}")
     String region;
 
-    public void uploadPhotos(List<MultipartFile> files, String uid, String photoType) throws IOException {
+    public void uploadPhotos(List<MultipartFile> files, String folderName ,String uid, String photoType) throws IOException {
         List<String> urlsForSavePhotosEvent = new ArrayList<>();
-
         for (MultipartFile file : files) {
-            String prefix = uid.replace("#", "") + "/PHOTOS/" + "photo_" + UUID.randomUUID().toString().substring(4, 8) ;
+            String prefix = uid.replace("#", "") + "/PHOTOS/" + folderName + "/"+ "photo_" + UUID.randomUUID().toString().substring(4, 8) ;
             s3Client.putObject(PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(prefix)
@@ -65,17 +67,18 @@ public class AdminService {
             return presignedPutReq.url().toString();
     }
 
-    public GetPhotosResponse getPhotosByUID(String uid) {
+    public GetPhotosResponse getPhotosByUID(String uid) throws IOException {
         String prefix = uid.replace("#", "") + "/PHOTOS/";
         return  GetPhotosResponse.builder()
-                .photoUrls(asService.getPresigendURLs(prefix))
+                .subFoldersWithUrls(asService.getNormalUrls(prefix))
                 .build();
     }
 
     public GetVideosResponse getVideosByUID(String uid) {
         String prefix = uid.replace("#", "") + "/VIDEOS/";
+
         return  GetVideosResponse.builder()
-                .videoUrls(asService.getPresigendURLs(prefix))
+                .videoUrls(asService.getNormalUrls(prefix))
                 .build();
     }
 

@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 
 
-import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class GetPhotosResponse {
-    List<String> photoUrls;
+    Map<String, Object> subFoldersWithUrls;
 
 
 }
