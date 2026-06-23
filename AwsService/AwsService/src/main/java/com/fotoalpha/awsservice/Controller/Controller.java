@@ -28,10 +28,11 @@ public class Controller {
     }
 
     @GetMapping("/getAllPhotos")
-    public ResponseEntity<GetPhotosResponse> getAllPhotos(Authentication authentication
+    public ResponseEntity<GetPhotosResponse> getAllPhotos(Authentication authentication,
+                                                          @RequestParam("folderName") String folderName
                                                          ) {
        String uid = authentication.getName().split(":")[0];
-        return new ResponseEntity<>(asService.getAllPhotos(uid), HttpStatus.OK);
+        return new ResponseEntity<>(asService.getAllPhotos(uid, folderName), HttpStatus.OK);
     }
     @GetMapping("/getFolderNames")
     public ResponseEntity<?> getFolders(Authentication authentication,
@@ -41,10 +42,11 @@ public class Controller {
     }
 
     @GetMapping("/getAllVideos")
-    public ResponseEntity<GetVideosResponse> getAllVideos(Authentication authentication
+    public ResponseEntity<GetVideosResponse> getAllVideos(Authentication authentication,
+                                                          @RequestParam("folderName") String folderName
                                                          ) {
        String uid = authentication.getName().split(":")[0];
-        return new ResponseEntity<>(asService.getAllVideos(uid), HttpStatus.OK);
+        return new ResponseEntity<>(asService.getAllVideos(uid, folderName), HttpStatus.OK);
     }
 
     @GetMapping("/downloadAllPhotos")

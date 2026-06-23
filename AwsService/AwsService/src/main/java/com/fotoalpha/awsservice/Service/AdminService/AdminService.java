@@ -67,18 +67,18 @@ public class AdminService {
             return presignedPutReq.url().toString();
     }
 
-    public GetPhotosResponse getPhotosByUID(String uid) throws IOException {
+    public GetPhotosResponse getPhotosByUID(String uid, String folderName) throws IOException {
         String prefix = uid.replace("#", "") + "/PHOTOS/";
         return  GetPhotosResponse.builder()
-                .subFoldersWithUrls(asService.getNormalUrls(prefix))
+                .subFoldersWithUrls(asService.getNormalUrls(prefix, folderName))
                 .build();
     }
 
-    public GetVideosResponse getVideosByUID(String uid) {
+    public GetVideosResponse getVideosByUID(String uid, String folderName) {
         String prefix = uid.replace("#", "") + "/VIDEOS/";
 
         return  GetVideosResponse.builder()
-                .videoUrls(asService.getNormalUrls(prefix))
+                .videoUrls(asService.getNormalUrls(prefix, folderName))
                 .build();
     }
 

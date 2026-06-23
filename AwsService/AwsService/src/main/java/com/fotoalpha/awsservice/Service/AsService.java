@@ -35,14 +35,14 @@ public class AsService {
     private String region;
 
 
-    public GetPhotosResponse getAllPhotos(String uid) {
+    public GetPhotosResponse getAllPhotos(String uid, String folderName) {
         String prefixPhotos = uid.replace("#", "")+"/PHOTOS/";
-        return GetPhotosResponse.builder().subFoldersWithUrls(getNormalUrls(prefixPhotos)).build();
+        return GetPhotosResponse.builder().subFoldersWithUrls(getNormalUrls(prefixPhotos, folderName)).build();
     }
 
-    public GetVideosResponse getAllVideos(String uid) {
+    public GetVideosResponse getAllVideos(String uid, String folderName) {
         String prefixVideos = uid.replace("#", "")+"/VIDEOS/";
-        return GetVideosResponse.builder().videoUrls(getNormalUrls(prefixVideos)).build();
+        return GetVideosResponse.builder().videoUrls(getNormalUrls(prefixVideos, folderName)).build();
     }
 
     public void downloadPhotosZip(String uid, String folderName,  HttpServletResponse response) throws IOException {
@@ -93,18 +93,18 @@ public class AsService {
                 .map(pfx -> pfx.substring(18, pfx.length()-1)).toList();
     }
 
-    public Map<String, Object> getNormalUrls(String prefix) {
+    public Map<String, Object> getNormalUrls(String prefix, String folderName) {
         Map<String, Object> subFoldersWithUrls = new HashMap<>();
-        List<Map<String, Object>> subFolders = new ArrayList<>();
+//        List<Map<String, Object>> subFolders = new ArrayList<>();
         ListObjectsV2Response res = s3Client.listObjectsV2(ListObjectsV2Request.builder()
                 .bucket(bucketName)
                 .prefix(prefix)
                 .delimiter("/")
                 .build());
-        subFoldersWithUrls.put("folder", res.prefix());
 
-        Map<String, Object> subFolder = null;
+//        Map<String, Object> subFolder = null;
         for (CommonPrefix sf : res.commonPrefixes()) {
+            if (sf.prefix().contains(folderName)) {
                 ListObjectsV2Response subContent = s3Client.listObjectsV2(ListObjectsV2Request.builder()
                         .prefix(sf.prefix())
                         .bucket(bucketName)
@@ -115,15 +115,14 @@ public class AsService {
                         .map(s3obj -> "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + s3obj.key())
                         .toList();
 
-                subFolder = new HashMap<>();
-                subFolder.put("files", urls);
-
                 String subPrefix = sf.prefix().substring(18, sf.prefix().length()-1);
-                subFolder.put("subFolder", subPrefix);
 
-                subFolders.add(subFolder);
+//                subFolders.add(subFolder);
+                subFoldersWithUrls.put("subFolder", subPrefix);
+                subFoldersWithUrls.put("files", urls);
+            }
         }
-        subFoldersWithUrls.put("subFolders", subFolders);
+//        subFoldersWithUrls.put("subFolders", subFolders);
 
         return subFoldersWithUrls;
     }

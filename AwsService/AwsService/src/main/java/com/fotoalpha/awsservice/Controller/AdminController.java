@@ -48,16 +48,18 @@ public class AdminController {
     }
 
     @GetMapping("/getAllPhotos")
-    public ResponseEntity<GetPhotosResponse> getPhotosByUID(@RequestParam("uid") String uid
+    public ResponseEntity<GetPhotosResponse> getPhotosByUID(@RequestParam("uid") String uid,
+                                                            @RequestParam("folderName") String folderName
 
                                                             ) throws IOException {
-        return new ResponseEntity<>(adminService.getPhotosByUID(uid), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.getPhotosByUID(uid, folderName), HttpStatus.OK);
     }
     @GetMapping("/getAllVideos")
-    public ResponseEntity<GetVideosResponse> getVideosByUID(@RequestParam("uid") String uid
+    public ResponseEntity<GetVideosResponse> getVideosByUID(@RequestParam("uid") String uid,
+                                                            @RequestParam("folderName") String folderName
 
                                                             ) throws IOException {
-        return new ResponseEntity<>(adminService.getVideosByUID(uid), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.getVideosByUID(uid, folderName), HttpStatus.OK);
     }
 
     @PostMapping("/saveProfilePicture")
