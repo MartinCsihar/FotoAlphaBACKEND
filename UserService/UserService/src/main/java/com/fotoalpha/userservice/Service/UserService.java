@@ -195,7 +195,7 @@ public class UserService {
     }
 
     public boolean isUsernameTaken(String username) {
-        return userRepo.findByUsername(username).isPresent();
+        return userRepo.findByUsername(username.strip()).isPresent();
     }
 
     public GetUser getUserData(String uid){

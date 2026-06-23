@@ -24,7 +24,7 @@ public class RegistrationService {
                 .firstName(req.getFirstName())
                 .lastName(req.getLastName())
                 .phoneNumber(req.getPhoneNumber())
-                .username(req.getUsername())
+                .username(req.getUsername().strip())
                 .numberOfPhotos(0)
                 .numberOfVideos(0)
                 .key("")
