@@ -16,12 +16,12 @@ public class AuthService {
     public String login(String data, String rawPassword, boolean withUsername) {
         User user = null;
         if (withUsername) {
-            user = userRepo.findByUsername(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+            user = userRepo.findByUsername(data.strip()).orElseThrow(() -> new RuntimeException("Invalid credentials"));
             if (passwordEncoder.matches(rawPassword,  user.getPassword()))  return jwtService.generateToken(user);
             else return "";
         }
         else if (!withUsername) {
-            user = userRepo.findByEmail(data).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+            user = userRepo.findByEmail(data.strip()).orElseThrow(() -> new RuntimeException("Invalid credentials"));
             if (passwordEncoder.matches(rawPassword,  user.getPassword()))  return jwtService.generateToken(user);
             else return "";
         }
