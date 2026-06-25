@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 public interface AppRepo extends JpaRepository<Appointments, String> {
@@ -45,4 +46,7 @@ public interface AppRepo extends JpaRepository<Appointments, String> {
 
     @Query(value = "select count(*) from appointments where user_id = ?1 ",nativeQuery = true)
     Integer countAppointmentsOfUser(String uid);
+
+    @Query(value = "select appointment_date from appointments where status = 'pending'",nativeQuery = true)
+    List<Date> getBookenDates();
 }

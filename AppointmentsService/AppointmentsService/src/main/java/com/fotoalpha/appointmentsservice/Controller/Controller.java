@@ -83,5 +83,12 @@ public class Controller {
         appService.setRatingOfAppointment(appid, uid);
     }
 
-
+    @GetMapping("/getBookedDates")
+    public ResponseEntity<?> getBookenDates() {
+        try{
+        return new ResponseEntity<>(appService.getBookedDays(), HttpStatus.OK);
+        }catch (Exception e ){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -388,4 +388,8 @@ public class appService {
         app.setIsRated(Boolean.TRUE);
         appRepo.save(app);
     }
+
+    public List<Date> getBookedDays() {
+        return appRepo.getBookenDates();
+    }
 }
