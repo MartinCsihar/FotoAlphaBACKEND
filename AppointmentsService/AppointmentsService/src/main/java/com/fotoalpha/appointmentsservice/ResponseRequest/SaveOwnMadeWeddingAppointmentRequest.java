@@ -20,4 +20,5 @@ public class SaveOwnMadeWeddingAppointmentRequest {
     LocalDate appointmentDate;
     LocalTime appointmentTime;
     List<Long> eventIds;
+    Integer price;
 }

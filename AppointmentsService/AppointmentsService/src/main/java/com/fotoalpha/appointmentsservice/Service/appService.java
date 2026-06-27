@@ -168,7 +168,7 @@ public class appService {
     @Transactional
     public boolean saveOwnMadeApp(SaveOwnMadeWeddingAppointmentRequest req, String uid) throws ExecutionException, InterruptedException, TimeoutException {
         List<Events> choosenEvents = eventRepo.findAllById((req.getEventIds()));
-        int bundlePrice = getBundlePrice(req, choosenEvents);
+//        int bundlePrice = getBundlePrice(req, choosenEvents);
 
         PersonalBundles pb = PersonalBundles.builder()
                 .rawPhotos(req.getRawPhotos())
@@ -176,7 +176,7 @@ public class appService {
                 .editedPhotos(req.getEditedPhotos())
                 .instantPhotos(req.getInstantPhotos())
                 .lightPaintPhotos(req.getLightPaintPhotos())
-                .bundlePrice(bundlePrice)
+                .bundlePrice(req.getPrice())
                 .events(choosenEvents)
                 .build();
         Appointments newOwnMadeApp = Appointments.builder()
@@ -328,7 +328,7 @@ public class appService {
                     PersonalBundles personalApp = app.getPersonalBundle();
                     GetAllAppointment gaa = GetAllAppointment.builder()
                             .id(appid == null ? personalApp.getId() : appid )
-                            .bundleName(personalApp == null ? String.valueOf(app.getBundle().getBundleSubType()):null)
+                            .bundleName(personalApp == null ? String.valueOf(app.getBundle().getBundleSubType()):"SAJÁT")
                             .bundleType(personalApp == null ? String.valueOf(app.getBundle().getBundleType()):null)
                             .price(personalApp == null ? app.getBundle().getBundlePrice() : personalApp.getBundlePrice())
                             .orderDate(app.getOrderDate())
