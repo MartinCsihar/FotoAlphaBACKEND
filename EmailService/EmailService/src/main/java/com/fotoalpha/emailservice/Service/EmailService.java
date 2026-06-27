@@ -13,6 +13,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -63,6 +66,11 @@ public class EmailService {
         String finalLocation = (event.pairLocations() == null || event.pairLocations().isEmpty())
                 ? "Budapest " + event.postalCode() + " " + event.streetName() + " " + event.streetType() + " " + event.houseNumber()
                 : event.pairLocations();
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.of("hu", "HU"));
+        nf.setMaximumFractionDigits(0);
+        String formattedPrice = nf.format(event.price());
+
+
         String htmlContent = """
                 <!DOCTYPE html>
                 <html>
@@ -98,7 +106,7 @@ public class EmailService {
                                 </tr>
                                 <tr>
                                   <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Fizetendő:</td>
-                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s Ft</td>
+                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s</td>
                                 </tr>
                          </table>
                          <table style="width:100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
@@ -132,7 +140,7 @@ public class EmailService {
                 event.appointmentDate(), event.appointmentTime(),
                 finalLocation,
                 event.bundleName(),
-                event.price(),
+                formattedPrice,
                 event.lastName(), event.firstName(),
                 event.phoneNumber(),
                 event.userEmail(),
@@ -149,6 +157,12 @@ public class EmailService {
     private void sendAppointmentCreatedForAdmin(AppointmentCreatedEvent event) throws MessagingException {
         MimeMessage mimeMessageForAdmin = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessageForAdmin, true, "UTF-8");
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.of("hu", "HU"));
+        nf.setMaximumFractionDigits(0);
+        String formattedPrice = nf.format(event.price());
+
+
 
         String finalLocation = (event.pairLocations() == null || event.pairLocations().isEmpty())
                 ? "Budapest " + event.postalCode() + " " + event.streetName() + " " + event.streetType() + " " + event.houseNumber()
@@ -188,7 +202,7 @@ public class EmailService {
                                 </tr>
                                 <tr>
                                   <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">Fizetendő:</td>
-                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s Ft</td>
+                                  <td style="padding: 12px; border: 1px solid #eee; font-weight: bold; color: #e67e22;">%s</td>
                                 </tr>
                          </table>
                          <table style="width:100%%; border-collapse: collapse; margin-top: 20px; justify-self: center;">
@@ -224,7 +238,7 @@ public class EmailService {
                 event.appointmentDate(), event.appointmentTime(),
                 finalLocation,
                 event.bundleName(),
-                event.price(),
+                formattedPrice,
                 event.lastName(), event.firstName(),
                 event.phoneNumber(),
                 event.userEmail(),
