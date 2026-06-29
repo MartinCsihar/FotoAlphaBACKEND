@@ -165,14 +165,16 @@ public class UserService {
                 .phoneNumber(user.getPhoneNumber())
                 .fullName( user.getLastName() + " " + user.getFirstName() )
                 .profPicUrl(GetUser.getUrl(bucketName, region, user.getKey()))
+                .numOfPhotos(user.getNumberOfPhotos())
+                .numOfVideos(user.getNumberOfVideos())
                 .build();
     }
 
 
     @Transactional
     public Object saveNumOfPhotosAndOrVideosForUser(SaveCount req) {
-        User user = userRepo.findByEmail(req.getEmail())
-                .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given email: " + req.getEmail()));
+        User user = userRepo.findByUserID(req.getUserId())
+                .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given id: " + req.getUserId()));
         user.setNumberOfPhotos(user.getNumberOfPhotos() + req.getPhotoCount());
         user.setNumberOfVideos(user.getNumberOfVideos() + req.getVideoCount());
         userRepo.save(user);
@@ -180,7 +182,7 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .photoCount(req.getPhotoCount())
                 .videoCount(req.getVideoCount())
-                .email(req.getEmail())
+                .email(user.getEmail())
                 .build();
         producer.sendGalleryUpdatedEvent(gue);
         return "Sikeres mentés!";

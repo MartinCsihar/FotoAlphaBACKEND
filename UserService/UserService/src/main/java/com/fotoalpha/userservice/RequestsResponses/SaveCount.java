@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class SaveCount {
     int photoCount;
     int  videoCount;
-    String email;
+    String userId;
 }
