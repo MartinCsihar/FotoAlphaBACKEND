@@ -232,11 +232,16 @@ public class UserService {
 
     public void getAllProfilePictures(UserInfoReqEvent event) {
         List<String> requestedUserIds = event.userIDs();
+
+        List<String>  responseUsernames = userRepo.findAllById(requestedUserIds)
+                .stream().map(User::getUsername).toList();
         List<String> responseProfilePics = userRepo.findAllById(requestedUserIds)
                 .stream().map( user -> GetUser.getUrl(bucketName, region, user.getKey())).toList();
         UserInfoResEvent res = UserInfoResEvent.builder()
                 .correlationId(event.correlationId())
                 .profPicUrls(responseProfilePics)
+                .userNames(responseUsernames)
+                .userIds(requestedUserIds)
                 .build();
         producer.sendUIR(res);
     }

@@ -365,10 +365,13 @@ public class appService {
     public void getRequestedAppointments(AppInfoReqEvent appInfoReqEvent) {
         List<Appointments> querriedApps = appRepo.findAllById(appInfoReqEvent.appIds());
         List<AppointmentResponse> appointmentResponses = new ArrayList<>();
+
         for (Appointments app : querriedApps) {
+            String type = app.getBundle() == null ? "EGYEDI" : String.valueOf(app.getBundle().getBundleType());
+            String subType = app.getBundle() == null ? "SAJÁT" : String.valueOf(app.getBundle().getBundleSubType());
             AppointmentResponse ar = AppointmentResponse.builder()
-                    .type(app.getType().toString())
-                    .bunldeSubType(app.getBundle().getBundleSubType().toString())
+                    .type(type)
+                    .bunldeSubType(subType)
                     .userId(app.getUserId())
                     .appId(app.getId())
                     .build();

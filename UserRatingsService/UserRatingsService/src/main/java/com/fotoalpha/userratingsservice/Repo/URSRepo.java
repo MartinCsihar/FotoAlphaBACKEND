@@ -12,6 +12,8 @@ import java.util.List;
 public interface URSRepo extends JpaRepository<UserRatingsService, URSKeys > {
     @Query(value = "select appointment_id from user_ratings_service", nativeQuery = true)
     List<String> getAllAppointmentIds();
-    @Query(value = "select user_id from user_ratings_service", nativeQuery = true)
+    @Query(value = "select distinct user_id from user_ratings_service", nativeQuery = true)
     List<String> getAllUserIds();
+    @Query(value = "select appointment_id from user_ratings_service where user_id = ?1", nativeQuery = true)
+    List<String> findAllRatingsBelongingToUser(String userId);
 }

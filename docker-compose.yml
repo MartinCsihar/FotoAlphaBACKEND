@@ -304,13 +304,13 @@ services:
             - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
             - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
             - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
-            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appInfoReq:com.fotoalpha.userratingsservice.KafkaEvents.AppInfoReqEvent
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appInfoReq:com.fotoalpha.userratingsservice.KafkaEvents.AppInfoReqEvent,pFpicReq:com.fotoalpha.userratingsservice.KafkaEvents.UserInfoReqEvent
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
             - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
             - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
-            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appInfoRes:com.fotoalpha.userratingsservice.KafkaEvents.AppInfoResEvent
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=appInfoRes:com.fotoalpha.userratingsservice.KafkaEvents.AppInfoResEvent,pFpicRes:com.fotoalpha.userratingsservice.KafkaEvents.UserInfoResEvent
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8087/health"]
             interval: 10s
@@ -345,14 +345,14 @@ services:
             - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_ADD_TYPE_HEADERS=true
             - SPRING_KAFKA_PRODUCER_KEY_SERIALIZER=org.apache.kafka.common.serialization.StringSerializer
             - SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER=org.springframework.kafka.support.serializer.JsonSerializer
-            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userDataResponse:com.fotoalpha.userservice.KafkaEvents.GetUserDataEventResponse,pwReset:com.fotoalpha.userservice.KafkaEvents.SendMailEvent,galleryUpdated:com.fotoalpha.userservice.KafkaEvents.GalleryUpdatedEvent
+            - SPRING_KAFKA_PRODUCER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userDataResponse:com.fotoalpha.userservice.KafkaEvents.GetUserDataEventResponse,pwReset:com.fotoalpha.userservice.KafkaEvents.SendMailEvent,galleryUpdated:com.fotoalpha.userservice.KafkaEvents.GalleryUpdatedEvent,pFpicRes:com.fotoalpha.userservice.KafkaEvents.UserInfoResEvent
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS=true
             - SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER=org.apache.kafka.common.serialization.StringDeserializer
             - SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER=org.springframework.kafka.support.serializer.JsonDeserializer
             - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TRUSTED_PACKAGES=com.fotoalpha.*
             - SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET=latest
             - SPRING_KAFKA_CONSUMER_GROUP_ID=user-service
-            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userData:com.fotoalpha.userservice.KafkaEvents.GetUserDataEvent,saveProfPic:com.fotoalpha.userservice.KafkaEvents.SaveProfilePictureEvent
+            - SPRING_KAFKA_CONSUMER_PROPERTIES_SPRING_JSON_TYPE_MAPPING=userData:com.fotoalpha.userservice.KafkaEvents.GetUserDataEvent,saveProfPic:com.fotoalpha.userservice.KafkaEvents.SaveProfilePictureEvent,pFpicReq:com.fotoalpha.userservice.KafkaEvents.UserInfoReqEvent
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
             interval: 10s

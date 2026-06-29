@@ -14,15 +14,10 @@ import com.fotoalpha.userratingsservice.RequestsResponses.RatingObject;
 import com.fotoalpha.userratingsservice.RequestsResponses.SaveRatingRequest;
 import lombok.RequiredArgsConstructor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -64,10 +59,13 @@ public class URSService {
     }
 
     public Object getRatings() throws ExecutionException, InterruptedException, TimeoutException {
+
         List<String> appIds = ursRepo.getAllAppointmentIds();
         List<String> userIds = ursRepo.getAllUserIds();
 
-        if (appIds.isEmpty()) { return "Még nincs értékelés! Legyél az első! :)";}
+        if (appIds.isEmpty()) {
+            return "Még nincs értékelés! Legyél az első! :)";
+        }
 
         UserInfoReqEvent userInfoReqEvent = UserInfoReqEvent.builder()
                 .correlationId(UUID.randomUUID().toString())
@@ -80,24 +78,42 @@ public class URSService {
                 .build();
 
         UserInfoResEvent userInfoResEvent = producer.sendUserInfoReqEvent(userInfoReqEvent);
-        AppInfoResEvent aire = producer.sendAppInfoReqEvent(appInfoReqEvent);
+        AppInfoResEvent appInfoResEvent = producer.sendAppInfoReqEvent(appInfoReqEvent);
+
+        // userId -> index a user response-ban
+        Map<String, Integer> userIndexMap = new HashMap<>();
+        for (int i = 0; i < userInfoResEvent.userIds().size(); i++) {
+            userIndexMap.put(userInfoResEvent.userIds().get(i), i);
+        }
 
         List<RatingObject> ratings = new ArrayList<>();
 
-        for (int i = 0; i < appIds.size(); i++) {
+        for (AppointmentResponse app : appInfoResEvent.querriedAppointments()) {
+
             URSKeys key = new URSKeys();
-            key.setUserId(aire.querriedAppointments().get(i).getUserId());
-            key.setAppointmentId(aire.querriedAppointments().get(i).getAppId());
+            key.setUserId(app.getUserId());
+            key.setAppointmentId(app.getAppId());
+
             UserRatingsService userRating = ursRepo.findById(key).orElse(null);
 
-            RatingObject newRating = RatingObject.builder()
-                    .appointmentResponse(aire.querriedAppointments().get(i))
-                    .rating(userRating.getRating())
-                    .date(userRating.getDate())
-                    .profilePicture(userInfoResEvent.profPicUrls().get(i))
-                    .build();
-            ratings.add(newRating);
+            if (userRating == null) {
+                continue;
+            }
+
+            int idx = userIndexMap.get(app.getUserId());
+
+            ratings.add(
+                    RatingObject.builder()
+                            .appointmentResponse(app)
+                            .rating(userRating.getRating())
+                            .date(userRating.getDate())
+                            .ratingText(userRating.getRatingText())
+                            .userName(userInfoResEvent.userNames().get(idx))
+                            .profilePicture(userInfoResEvent.profPicUrls().get(idx))
+                            .build()
+            );
         }
+
         return new FetchAllRatingsResponse(ratings);
     }
 }
