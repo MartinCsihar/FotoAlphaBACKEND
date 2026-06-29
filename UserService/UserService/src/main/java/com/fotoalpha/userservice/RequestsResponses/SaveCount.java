@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SaveCount {
-    int photoCount;
-    int  videoCount;
+    Integer photoCount;
+    Integer videoCount;
     String userId;
+    String type;
 }

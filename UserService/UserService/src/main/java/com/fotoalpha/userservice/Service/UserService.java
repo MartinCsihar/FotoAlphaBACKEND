@@ -175,17 +175,30 @@ public class UserService {
     public Object saveNumOfPhotosAndOrVideosForUser(SaveCount req) {
         User user = userRepo.findByUserID(req.getUserId())
                 .orElseThrow(() ->  new UsernameNotFoundException("User not found with the given id: " + req.getUserId()));
-        user.setNumberOfPhotos(user.getNumberOfPhotos() + req.getPhotoCount());
-        user.setNumberOfVideos(user.getNumberOfVideos() + req.getVideoCount());
-        userRepo.save(user);
-        GalleryUpdatedEvent gue = GalleryUpdatedEvent.builder()
-                .firstName(user.getFirstName())
-                .photoCount(req.getPhotoCount())
-                .videoCount(req.getVideoCount())
-                .email(user.getEmail())
-                .build();
-        producer.sendGalleryUpdatedEvent(gue);
-        return "Sikeres mentés!";
+        if(req.getType().equals("photo")) {
+            user.setNumberOfPhotos(user.getNumberOfPhotos() + req.getPhotoCount());
+            GalleryUpdatedEvent gue = GalleryUpdatedEvent.builder()
+                    .firstName(user.getFirstName())
+                    .photoCount(req.getPhotoCount())
+                    .email(user.getEmail())
+                    .type("photo")
+                    .build();
+            producer.sendGalleryUpdatedEvent(gue);
+            userRepo.save(user);
+            return "Sikeres mentés!";
+        }
+        else{
+            user.setNumberOfVideos(user.getNumberOfVideos() + req.getVideoCount());
+            GalleryUpdatedEvent gue = GalleryUpdatedEvent.builder()
+                    .firstName(user.getFirstName())
+                    .videoCount(req.getVideoCount())
+                    .email(user.getEmail())
+                    .type("video")
+                    .build();
+            producer.sendGalleryUpdatedEvent(gue);
+            userRepo.save(user);
+            return "Sikeres mentés!";
+        }
     }
 
     @Transactional

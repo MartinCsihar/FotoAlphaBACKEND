@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -286,28 +287,59 @@ public class EmailService {
     public void sendGalleryUpdatedEvent(GalleryUpdatedEvent event) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-        String htmlContent = """
-                                <html>
-                                        <head>
-                                            <meta charset="UTF-8">
-                                        </head>
-                                        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
-                                               <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                               		<div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
-                                                   	 	<h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
-                                                    	<p style="margin: 10px 0 0 0; opacity: 0.8;">Galéria állapotváltozás</p>
-                                               		</div>
-                                                    <div style="padding: 30px">
-                                                        <p><strong>Kedves</strong> %s!</p>
-                                                        <p><strong>Martin</strong> az imént töltötte fel galériád <strong>%s db</strong> képpel, és <strong>%s db</strong> videóval!</p>
-                                                    </div>
-                                               </div>
-                                        </body>
-                                        </html>
-        """.formatted(event.firstName(),event.photoCount(),event.videoCount());
-        helper.setSubject("Frissült a galériád! - FotoAlpha");
-        helper.setTo(event.email());
-        helper.setText(htmlContent, true);
-        mailSender.send(mimeMessage);
+        if (Objects.equals(event.type(), "photo")){
+            String htmlContent = """
+            <html>
+                    <head>
+                        <meta charset="UTF-8">
+                    </head>
+                    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                           <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                <div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                                    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                                    <p style="margin: 10px 0 0 0; opacity: 0.8;">Galéria állapotváltozás</p>
+                                </div>
+                                <div style="padding: 30px">
+                                    <p><strong>Kedves</strong> %s!</p>
+                                    <p><strong>Martin</strong> az imént töltötte fel galériád <strong>%s db</strong> képpel!</p>
+                                </div>
+                           </div>
+                    </body>
+                    </html>
+            """.formatted(
+                    event.firstName(),
+                    event.photoCount());
+            helper.setSubject("Frissült a galériád! - FotoAlpha");
+            helper.setTo(event.email());
+            helper.setText(htmlContent, true);
+            mailSender.send(mimeMessage);
+        }
+        else if (Objects.equals(event.type(), "video")){
+            String htmlContent = """
+            <html>
+                    <head>
+                        <meta charset="UTF-8">
+                    </head>
+                    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                           <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                <div style="background-color: #2c3e50; color: #ffffff; padding: 30px; text-align: center;">
+                                    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; text-transform: uppercase;">FotoAlpha</h1>
+                                    <p style="margin: 10px 0 0 0; opacity: 0.8;">Galéria állapotváltozás</p>
+                                </div>
+                                <div style="padding: 30px">
+                                    <p><strong>Kedves</strong> %s!</p>
+                                    <p><strong>Martin</strong> az imént töltötte fel galériád <strong>%s db</strong> videóval!</p>
+                                </div>
+                           </div>
+                    </body>
+                    </html>
+            """.formatted(
+                    event.firstName(),
+                    event.videoCount());
+            helper.setSubject("Frissült a galériád! - FotoAlpha");
+            helper.setTo(event.email());
+            helper.setText(htmlContent, true);
+            mailSender.send(mimeMessage);
+        }
     }
 }

@@ -6,8 +6,9 @@ import lombok.Builder;
 public record GalleryUpdatedEvent(
         String firstName,
         String email,
-        int photoCount,
-        int videoCount
+        Integer photoCount,
+        Integer videoCount,
+        String type
 ) {
 
 }
