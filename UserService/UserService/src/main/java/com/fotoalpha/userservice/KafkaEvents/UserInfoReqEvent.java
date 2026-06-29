@@ -1,4 +1,4 @@
-package com.fotoalpha.userratingsservice.KafkaEvents;
+package com.fotoalpha.userservice.KafkaEvents;
 
 import lombok.Builder;
 

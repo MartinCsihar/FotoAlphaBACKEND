@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,12 +37,18 @@ public class AdminController {
             return new ResponseEntity<>(new UploadFilesRes("Nem sikerült feltölteni a fileokat! Hiba: "+e),HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping(value = "/generatePresignedPutReq")
-    public ResponseEntity<String> uploadVideos(@RequestParam("uid") String uid,
-                                               @RequestParam("folderName") String folderName ) {
+    @GetMapping(value = "/generatePresignedPutRequests")
+    public ResponseEntity<?> uploadVideos(@RequestParam("uid") String uid,
+                                               @RequestParam("folderName") String folderName,
+                                               @RequestParam("count") Integer count ) {
         try{
-            String key = uid+"/VIDEOS/"+ folderName + "/" +"video_" + UUID.randomUUID().toString().substring(4,8);
-            return new ResponseEntity<>(adminService.generatePresignedUrl(key),  HttpStatus.OK);
+            List<String> presignedUrls = new ArrayList<>();
+            for(int i = 0; i < count; i++){
+                String key = uid.replace("#","").strip()+"/VIDEOS/"+ folderName.strip() + "/" +"video_" + UUID.randomUUID().toString().substring(4,8);
+                String url = adminService.generatePresignedUrl(key);
+                presignedUrls.add(url);
+            }
+            return new ResponseEntity<>(presignedUrls,  HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>("Nem sikerült feltölteni a videót!",HttpStatus.BAD_REQUEST);
         }

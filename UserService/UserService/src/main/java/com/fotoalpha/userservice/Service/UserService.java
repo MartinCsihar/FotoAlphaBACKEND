@@ -229,4 +229,15 @@ public class UserService {
     public Map<String, Integer> getNumberOfPhotosMadeForUser(String uid) {
          return Map.of("photos", userRepo.countUserPhotos(uid), "videos", userRepo.countUserVideos(uid));
     }
+
+    public void getAllProfilePictures(UserInfoReqEvent event) {
+        List<String> requestedUserIds = event.userIDs();
+        List<String> responseProfilePics = userRepo.findAllById(requestedUserIds)
+                .stream().map( user -> GetUser.getUrl(bucketName, region, user.getKey())).toList();
+        UserInfoResEvent res = UserInfoResEvent.builder()
+                .correlationId(event.correlationId())
+                .profPicUrls(responseProfilePics)
+                .build();
+        producer.sendUIR(res);
+    }
 }

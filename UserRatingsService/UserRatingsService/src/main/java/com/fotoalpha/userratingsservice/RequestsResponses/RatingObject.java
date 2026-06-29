@@ -11,5 +11,6 @@ public class RatingObject {
     int rating;
     LocalDate date;
     AppointmentResponse appointmentResponse;
+    String profilePicture;
 
 }

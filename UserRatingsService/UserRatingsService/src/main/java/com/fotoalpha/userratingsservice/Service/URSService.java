@@ -5,6 +5,8 @@ import com.fotoalpha.userratingsservice.Entity.UserRatingsService;
 import com.fotoalpha.userratingsservice.Kafka.Producer;
 import com.fotoalpha.userratingsservice.KafkaEvents.AppInfoReqEvent;
 import com.fotoalpha.userratingsservice.KafkaEvents.AppInfoResEvent;
+import com.fotoalpha.userratingsservice.KafkaEvents.UserInfoReqEvent;
+import com.fotoalpha.userratingsservice.KafkaEvents.UserInfoResEvent;
 import com.fotoalpha.userratingsservice.Repo.URSRepo;
 import com.fotoalpha.userratingsservice.RequestsResponses.AppointmentResponse;
 import com.fotoalpha.userratingsservice.RequestsResponses.FetchAllRatingsResponse;
@@ -63,11 +65,21 @@ public class URSService {
 
     public Object getRatings() throws ExecutionException, InterruptedException, TimeoutException {
         List<String> appIds = ursRepo.getAllAppointmentIds();
+        List<String> userIds = ursRepo.getAllUserIds();
+
         if (appIds.isEmpty()) { return "Még nincs értékelés! Legyél az első! :)";}
+
+        UserInfoReqEvent userInfoReqEvent = UserInfoReqEvent.builder()
+                .correlationId(UUID.randomUUID().toString())
+                .userIDs(userIds)
+                .build();
+
         AppInfoReqEvent appInfoReqEvent = AppInfoReqEvent.builder()
                 .correlationId(UUID.randomUUID().toString())
                 .appIds(appIds)
                 .build();
+
+        UserInfoResEvent userInfoResEvent = producer.sendUserInfoReqEvent(userInfoReqEvent);
         AppInfoResEvent aire = producer.sendAppInfoReqEvent(appInfoReqEvent);
 
         List<RatingObject> ratings = new ArrayList<>();
@@ -82,6 +94,7 @@ public class URSService {
                     .appointmentResponse(aire.querriedAppointments().get(i))
                     .rating(userRating.getRating())
                     .date(userRating.getDate())
+                    .profilePicture(userInfoResEvent.profPicUrls().get(i))
                     .build();
             ratings.add(newRating);
         }

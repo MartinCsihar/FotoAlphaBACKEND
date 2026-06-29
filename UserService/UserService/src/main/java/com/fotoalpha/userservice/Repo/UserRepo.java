@@ -35,4 +35,6 @@ public interface UserRepo extends JpaRepository<User, String> {
     @Query(value = "select sum(number_of_videos) from users", nativeQuery = true)
     Integer countVideos();
 
+    @Query(value = "select profile from users", nativeQuery = true)
+    List<String> getAllProfilePic(List<String> requestedUserIds);
 }
